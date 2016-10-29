@@ -1,0 +1,8 @@
+[Plugin]
+Module=appindicatorapplet.so
+Name=AppIndicator Applet
+Description=AppIndicator Applet
+Authors=David Mohammed
+Copyright=Copyright © 2016 David Mohammed
+Website=https://budgie-remix.org
+Icon=user-home-symbolic
