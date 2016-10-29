@@ -1,3 +1,9 @@
+budgie-indicator-applet (0.0.2) xenial; urgency=medium
+
+  * README and debian/control dependency
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 29 Oct 2016 14:24:35 +0100
+
 budgie-indicator-applet (0.0.1) xenial; urgency=medium
 
   * Initial release
