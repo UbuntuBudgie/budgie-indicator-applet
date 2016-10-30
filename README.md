@@ -31,8 +31,7 @@ To run: install the recommended packages
 TODO
 -----
 
- - [ ] Fix menu theming for Raven System Theme (currently can only use without system theme)
- - [ ] Change menu displays to popups - probably will fix the above
+ - [ ] Applet background needs to use panel colour 
  - [ ] Code cleanup - copyright statements, unused code, change boilerplate budgie-applet
  - [ ] Correct debian/copyright
  - [ ] check all the build dependencies are actually needed
@@ -41,6 +40,5 @@ Enhancements
 -----
 
  - [ ] For the applet settings add capability to change indicator order
- - [ ] Appindicator spacing is too wide
- - [ ] Applet background needs to use panel colour 
+ - [ ] Appindicator spacing is too wide when not using built-in-theme
  - [ ] Applet background needs to respect raven stylise regions option

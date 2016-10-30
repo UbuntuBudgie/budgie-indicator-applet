@@ -87,55 +87,20 @@ static void native_panel_applet_init(AppIndicatorPanelApplet *self)
         GtkWidget *label = NULL;
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
-        GtkCssProvider *css_provider;
         
         gint indicators_loaded = 0;
         
         menubar = gtk_menu_bar_new();
         
-        //css_provider = gtk_css_provider_new ();
-        //gtk_css_provider_load_from_data (css_provider, "#indicator-button { -GtkWidget-focus-padding: 0; -GtkWidget-focus-line-width: 0; -GtkButton-default-border: 0; -GtkButton-inner-border: 0; padding: 1px; border-width: 1px;}", -1, NULL);
-        //gtk_style_context_add_provider (GTK_STYLE_CONTEXT (gtk_widget_get_style_context (GTK_WIDGET (menubar))), GTK_STYLE_PROVIDER (css_provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
         eventbox = gtk_event_box_new();
         gtk_container_add(GTK_CONTAINER(self), eventbox);
-
-    
-        /*gtk_rc_parse_string (
-	    "style \"indicator-applet-style\"\n"
-        "{\n"
-        "    GtkMenuBar::shadow-type = none\n"
-        "    GtkMenuBar::internal-padding = 0\n"
-        "    GtkWidget::focus-line-width = 0\n"
-        "    GtkWidget::focus-padding = 0\n"
-        "}\n"
-	    "style \"indicator-applet-menubar-style\"\n"
-        "{\n"
-        "    GtkMenuBar::shadow-type = none\n"
-        "    GtkMenuBar::internal-padding = 0\n"
-        "    GtkWidget::focus-line-width = 0\n"
-        "    GtkWidget::focus-padding = 0\n"
-        "    GtkMenuItem::horizontal-padding = 0\n"
-        "}\n"
-	    "style \"indicator-applet-menuitem-style\"\n"
-        "{\n"
-        "    GtkWidget::focus-line-width = 0\n"
-        "    GtkWidget::focus-padding = 0\n"
-        "    GtkMenuItem::horizontal-padding = 0\n"
-        "}\n"
-        "widget \"*.fast-user-switch-applet\" style \"indicator-applet-style\""
-        "widget \"*.fast-user-switch-menuitem\" style \"indicator-applet-menuitem-style\""
-        "widget \"*.fast-user-switch-menubar\" style \"indicator-applet-menubar-style\"");
-        gtk_widget_set_name(GTK_WIDGET (eventbox), "fast-user-switch-applet");
-        */
+        gtk_widget_show(eventbox);
+        
         gtk_widget_set_can_focus (menubar, TRUE);
-        //gtk_widget_set_name(GTK_WIDGET (menubar), "fast-user-switch-menubar");
-
+        
         g_signal_connect_after(menubar, "draw", G_CALLBACK(menubar_on_draw), menubar);
         gtk_container_set_border_width(GTK_CONTAINER(menubar), 0);
         
-        //gtk_container_add(GTK_CONTAINER(eventbox), label);
-
         load_modules(menubar, &indicators_loaded);
         //load_indicators_from_indicator_files(menubar, &indicators_loaded);
         if (indicators_loaded == 0) {

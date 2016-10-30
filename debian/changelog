@@ -1,3 +1,10 @@
+budgie-indicator-applet (0.0.3) xenial; urgency=medium
+
+  * hard-code applet to use raven styleprovider so that menus are not 
+    transparent
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 30 Oct 2016 14:31:57 +0000
+
 budgie-indicator-applet (0.0.2) xenial; urgency=medium
 
   * README and debian/control dependency

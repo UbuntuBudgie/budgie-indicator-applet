@@ -284,7 +284,8 @@ entry_added (IndicatorObject * io, IndicatorObjectEntry * entry, GtkWidget * men
 	g_debug("Signal: Entry Added");
 	gboolean something_visible = FALSE;
 	gboolean something_sensitive = FALSE;
-
+    GtkStyleContext *context;
+    
 	GtkWidget * menuitem = gtk_menu_item_new();
 	GtkWidget * box = (packdirection == GTK_PACK_DIRECTION_LTR) ?
 //#if GTK_CHECK_VERSION (3, 0, 0)
@@ -346,11 +347,17 @@ entry_added (IndicatorObject * io, IndicatorObjectEntry * entry, GtkWidget * men
 
 		g_signal_connect(G_OBJECT(entry->label), "notify::sensitive", G_CALLBACK(sensitive_cb), menuitem);
 	}
+    /* for the appindicator (menuitem) we need to style it with raven otherwise
+     * all submenus are transparent
+    */
+    context = gtk_widget_get_style_context (GTK_WIDGET (menuitem));
+    gtk_style_context_add_class (context, "raven");
+		
 	gtk_container_add(GTK_CONTAINER(menuitem), box);
 	gtk_widget_show(box);
 
 	if (entry->menu != NULL) {
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), GTK_WIDGET(entry->menu));
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), GTK_WIDGET(entry->menu));
 	}
 
 	incoming_position_t position;
