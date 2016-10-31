@@ -7,10 +7,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *  
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -27,39 +27,28 @@
 
 G_BEGIN_DECLS
 
-void
-load_modules (GtkWidget *menubar, gint *indicators_loaded);
+void load_modules(GtkWidget *menubar, gint *indicators_loaded);
 
-void
-load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loaded);
+void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_loaded);
 
-gboolean
-menubar_on_draw (GtkWidget * widget,
-                 cairo_t * cr,
-                 GtkWidget * menubar);
+gboolean menubar_on_draw(GtkWidget *widget, cairo_t *cr, GtkWidget *menubar);
 
-static gchar * indicator_order[] = {
-	"libapplication.so",
-	"libmessaging.so",
-	"libsoundmenu.so",
-	"libdatetime.so",
-	"libsession.so",
-	NULL
-};
+static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "libsoundmenu.so",
+                                    "libdatetime.so",    "libsession.so",   NULL };
 
 static GtkPackDirection packdirection;
 
-#define  MENU_DATA_INDICATOR_OBJECT  "indicator-object"
-#define  MENU_DATA_INDICATOR_ENTRY   "indicator-entry"
+#define MENU_DATA_INDICATOR_OBJECT "indicator-object"
+#define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
 
-#define  IO_DATA_ORDER_NUMBER        "indicator-order-number"
-
+#define IO_DATA_ORDER_NUMBER "indicator-order-number"
 
 /**
  * Define our type, which is a BudgieApplet extension
  */
-#define NATIVE_TYPE_PANEL_APPLET native_panel_applet_get_type ()
-G_DECLARE_FINAL_TYPE(AppIndicatorPanelApplet, native_panel_applet, NATIVE, PANEL_APPLET, BudgieApplet)
+#define NATIVE_TYPE_PANEL_APPLET native_panel_applet_get_type()
+G_DECLARE_FINAL_TYPE(AppIndicatorPanelApplet, native_panel_applet, NATIVE, PANEL_APPLET,
+                     BudgieApplet)
 
 G_END_DECLS
 
@@ -74,8 +63,7 @@ BudgieApplet *native_panel_applet_new(void)
 /**
  * Simple instance tracking
  */
-struct _AppIndicatorPanelApplet
-{
+struct _AppIndicatorPanelApplet {
         BudgieApplet parent;
 };
 
@@ -87,31 +75,31 @@ static void native_panel_applet_init(AppIndicatorPanelApplet *self)
         GtkWidget *label = NULL;
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
-        
+
         gint indicators_loaded = 0;
-        
+
         menubar = gtk_menu_bar_new();
         eventbox = gtk_event_box_new();
         gtk_container_add(GTK_CONTAINER(self), eventbox);
         gtk_widget_show(eventbox);
-        
-        //gtk_widget_set_can_focus (menubar, TRUE);
-        
-        //g_signal_connect_after(menubar, "draw", G_CALLBACK(menubar_on_draw), menubar);
+
+        // gtk_widget_set_can_focus (menubar, TRUE);
+
+        // g_signal_connect_after(menubar, "draw", G_CALLBACK(menubar_on_draw), menubar);
         gtk_container_set_border_width(GTK_CONTAINER(menubar), 1);
-        
+
         load_modules(menubar, &indicators_loaded);
-        //load_indicators_from_indicator_files(menubar, &indicators_loaded);
+        // load_indicators_from_indicator_files(menubar, &indicators_loaded);
         if (indicators_loaded == 0) {
-            /* A label to allow for click through */
-            GtkWidget * item = gtk_label_new(_("No Indicators"));
-            gtk_container_add(GTK_CONTAINER(eventbox), item);
-            gtk_widget_show(item);
+                /* A label to allow for click through */
+                GtkWidget *item = gtk_label_new(_("No Indicators"));
+                gtk_container_add(GTK_CONTAINER(eventbox), item);
+                gtk_widget_show(item);
         } else {
-            gtk_container_add(GTK_CONTAINER(eventbox), menubar);
-            gtk_widget_show(menubar);
+                gtk_container_add(GTK_CONTAINER(eventbox), menubar);
+                gtk_widget_show(menubar);
         }
-        
+
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));
 }
@@ -132,7 +120,8 @@ static void native_panel_applet_class_finalize(__budgie_unused__ AppIndicatorPan
  * This is us now doing the implementation chain ups..
  */
 
-G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorPanelApplet, native_panel_applet, BUDGIE_TYPE_APPLET, 0, )
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorPanelApplet, native_panel_applet, BUDGIE_TYPE_APPLET,
+                               0, )
 
 /**
  * Work around the register types issue.

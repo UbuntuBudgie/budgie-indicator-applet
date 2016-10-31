@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA 
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  */
 #ifndef __TOMBOY_KEY_BINDER_H__
 #define __TOMBOY_KEY_BINDER_H__
@@ -22,22 +22,18 @@
 
 G_BEGIN_DECLS
 
-typedef void (* TomboyBindkeyHandler) (char *keystring, gpointer user_data);
+typedef void (*TomboyBindkeyHandler)(char *keystring, gpointer user_data);
 
-void tomboy_keybinder_init   (void);
+void tomboy_keybinder_init(void);
 
-void tomboy_keybinder_bind   (const char           *keystring,
-			      TomboyBindkeyHandler  handler,
-			      gpointer              user_data);
+void tomboy_keybinder_bind(const char *keystring, TomboyBindkeyHandler handler, gpointer user_data);
 
-void tomboy_keybinder_unbind (const char           *keystring,
-			      TomboyBindkeyHandler  handler);
+void tomboy_keybinder_unbind(const char *keystring, TomboyBindkeyHandler handler);
 
-gboolean tomboy_keybinder_is_modifier (guint keycode);
+gboolean tomboy_keybinder_is_modifier(guint keycode);
 
-guint32 tomboy_keybinder_get_current_event_time (void);
+guint32 tomboy_keybinder_get_current_event_time(void);
 
 G_END_DECLS
 
 #endif /* __TOMBOY_KEY_BINDER_H__ */
-
