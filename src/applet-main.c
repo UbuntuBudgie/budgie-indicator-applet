@@ -285,14 +285,10 @@ entry_added (IndicatorObject * io, IndicatorObjectEntry * entry, GtkWidget * men
 	gboolean something_visible = FALSE;
 	gboolean something_sensitive = FALSE;
     GtkStyleContext *context;
+    GtkCssProvider *css_provider = NULL;
     
 	GtkWidget * menuitem = gtk_menu_item_new();
-	GtkWidget * box = (packdirection == GTK_PACK_DIRECTION_LTR) ?
-//#if GTK_CHECK_VERSION (3, 0, 0)
-		gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3) : gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
-//#else
-//		gtk_hbox_new(FALSE, 3) : gtk_vbox_new(FALSE, 3);
-//#endif
+	GtkWidget * box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 
 	/* Allows indicators to receive mouse scroll event in GTK+3 */
 	gtk_widget_add_events(GTK_WIDGET(menuitem), GDK_SCROLL_MASK);
@@ -320,18 +316,6 @@ entry_added (IndicatorObject * io, IndicatorObjectEntry * entry, GtkWidget * men
 	}
 	if (entry->label != NULL) {
         gtk_label_set_angle(GTK_LABEL(entry->label), 0.0);
-		/*switch(packdirection) {
-			case GTK_PACK_DIRECTION_LTR:
-				gtk_label_set_angle(GTK_LABEL(entry->label), 0.0);
-				break;
-			case GTK_PACK_DIRECTION_TTB:
-				gtk_label_set_angle(GTK_LABEL(entry->label),
-						(orient == MATE_PANEL_APPLET_ORIENT_LEFT) ?
-						270.0 : 90.0);
-				break;
-			default:
-				break;
-		}*/
 		gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(entry->label), FALSE, FALSE, 1);
 
 		if (gtk_widget_get_visible(GTK_WIDGET(entry->label))) {
@@ -347,6 +331,20 @@ entry_added (IndicatorObject * io, IndicatorObjectEntry * entry, GtkWidget * men
 
 		g_signal_connect(G_OBJECT(entry->label), "notify::sensitive", G_CALLBACK(sensitive_cb), menuitem);
 	}
+    
+    /* 
+     * override menuitem so that the background color of the applet is the same as the panel
+     */
+    css_provider = gtk_css_provider_new ();
+    gtk_css_provider_load_from_data (css_provider, 
+        ".menuitem {\n"
+        "    -GtkMenuItem-horizontal-padding: 0;\n"
+        "    background: transparent;\n"
+        "    border-radius: 0;\n"
+        "    padding: 0px 0px 0px 0px;"
+        "    text-shadow: none;}", -1, NULL);
+    gtk_style_context_add_provider (GTK_STYLE_CONTEXT (gtk_widget_get_style_context (GTK_WIDGET (menuitem))), GTK_STYLE_PROVIDER (css_provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
     /* for the appindicator (menuitem) we need to style it with raven otherwise
      * all submenus are transparent
     */
