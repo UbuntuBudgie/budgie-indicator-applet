@@ -95,9 +95,9 @@ static void native_panel_applet_init(AppIndicatorPanelApplet *self)
         gtk_container_add(GTK_CONTAINER(self), eventbox);
         gtk_widget_show(eventbox);
         
-        gtk_widget_set_can_focus (menubar, TRUE);
+        //gtk_widget_set_can_focus (menubar, TRUE);
         
-        g_signal_connect_after(menubar, "draw", G_CALLBACK(menubar_on_draw), menubar);
+        //g_signal_connect_after(menubar, "draw", G_CALLBACK(menubar_on_draw), menubar);
         gtk_container_set_border_width(GTK_CONTAINER(menubar), 1);
         
         load_modules(menubar, &indicators_loaded);
