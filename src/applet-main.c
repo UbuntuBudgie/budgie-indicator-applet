@@ -5,7 +5,7 @@ into the mate-panel using it's applet interface.
 Copyright 2009-2010 Canonical Ltd., 2016 David Mohammed
 
 Authors:
-    Ted Gould <ted@canonical.com>
+    Ted Gould <ted@canonical.ciom>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3, as published
@@ -24,7 +24,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib/gi18n.h>
 #include <stdlib.h>
 #include <string.h>
-/*#include <mate-panel-applet.h>*/
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -42,41 +41,17 @@ static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "lib
                                     "libdatetime.so",    "libsession.so",   NULL };
 
 static GtkPackDirection packdirection;
-/*static MatePanelAppletOrient orient;*/
 
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
 
 #define IO_DATA_ORDER_NUMBER "indicator-order-number"
 
-/*static gboolean     applet_fill_cb (MatePanelApplet * applet, const gchar * iid, gpointer data);*/
-
 static void update_accessible_desc(IndicatorObjectEntry *entry, GtkWidget *menuitem);
 
 /*************
  * main
  * ***********/
-
-/*
-#ifdef INDICATOR_APPLET
-MATE_PANEL_APPLET_OUT_PROCESS_FACTORY ("IndicatorAppletFactory",
-               PANEL_TYPE_APPLET,
-               "indicator-applet",
-               applet_fill_cb, NULL);
-#endif
-#ifdef INDICATOR_APPLET_COMPLETE
-MATE_PANEL_APPLET_OUT_PROCESS_FACTORY ("IndicatorAppletCompleteFactory",
-               PANEL_TYPE_APPLET,
-               "indicator-applet-complete",
-               applet_fill_cb, NULL);
-#endif
-#ifdef INDICATOR_APPLET_APPMENU
-MATE_PANEL_APPLET_OUT_PROCESS_FACTORY ("IndicatorAppletAppmenuFactory",
-               PANEL_TYPE_APPLET,
-               "indicator-applet-appmenu",
-               applet_fill_cb, NULL);
-#endif
-*/
 
 /*************
  * log files
@@ -272,11 +247,20 @@ static void accessible_desc_update(IndicatorObject *io, IndicatorObjectEntry *en
 
 static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWidget *menubar)
 {
-        g_debug("Signal: Entry Added");
+        g_debug("zzz Signal: Entry Added");
         gboolean something_visible = FALSE;
         gboolean something_sensitive = FALSE;
         GtkStyleContext *context;
         GtkCssProvider *css_provider = NULL;
+        
+        /*
+         * we don't want to have the nm-applet being displayed
+         * budgie-desktop provides this
+         */
+        if (strstr(entry->name_hint, "nm-applet") != NULL) {
+            return;
+        }
+        g_debug("zzz %s", entry->name_hint);
 
         GtkWidget *menuitem = gtk_menu_item_new();
         GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
@@ -350,7 +334,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                                         "    -GtkMenuItem-horizontal-padding: 0;\n"
                                         "    background: transparent;\n"
                                         "    border-radius: 0;\n"
-                                        "    padding: 0px 0px 0px 0px;"
+                                        "    padding: 1px 1px 1px 1px;"
                                         "    text-shadow: none;}",
                                         -1,
                                         NULL);
@@ -390,7 +374,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                 gtk_widget_show(menuitem);
         }
         gtk_widget_set_sensitive(menuitem, something_sensitive);
-
+        
         g_object_set_data(G_OBJECT(menuitem), MENU_DATA_INDICATOR_ENTRY, entry);
         g_object_set_data(G_OBJECT(menuitem), MENU_DATA_INDICATOR_OBJECT, io);
 
@@ -542,7 +526,7 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
 {
         /* Set the environment it's in */
         indicator_object_set_environment(io, (const GStrv)indicator_env);
-
+        g_debug("zzz load_indicator %s", name);
 /* Attach the 'name' to the object */
 #if HAVE_INDICATOR_NG
         int pos = 5000 - indicator_object_get_position(io);
@@ -580,7 +564,7 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         /* Work on the entries */
         GList *entries = indicator_object_get_entries(io);
         GList *entry = NULL;
-
+    
         for (entry = entries; entry != NULL; entry = g_list_next(entry)) {
                 IndicatorObjectEntry *entrydata = (IndicatorObjectEntry *)entry->data;
                 entry_added(io, entrydata, menubar);
@@ -635,6 +619,7 @@ void load_modules(GtkWidget *menubar, gint *indicators_loaded)
                                 continue;
                         }
 #endif
+                        g_debug("zzz a: %s", name);
                         if (load_module(name, menubar)) {
                                 count++;
                         }
@@ -693,10 +678,11 @@ void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_l
 #endif
 
                 if (indicator) {
+                        g_debug("zzz b: %s", name);
                         load_indicator(menubar, INDICATOR_OBJECT(indicator), name);
                         count++;
                 } else {
-                        g_warning("unable to load '%s': %s", name, error->message);
+                        g_warning("zzz unable to load '%s': %s", name, error->message);
                         g_clear_error(&error);
                 }
         }
@@ -810,18 +796,6 @@ static gboolean swap_orient_cb(GtkWidget *item, gpointer data)
         gtk_container_remove(GTK_CONTAINER(from), item);
         if (GTK_IS_LABEL(item)) {
                 gtk_label_set_angle(GTK_LABEL(item), 0.0);
-                /*switch(packdirection) {
-                case GTK_PACK_DIRECTION_LTR:
-                        gtk_label_set_angle(GTK_LABEL(item), 0.0);
-                        break;
-                case GTK_PACK_DIRECTION_TTB:
-                        gtk_label_set_angle(GTK_LABEL(item),
-                                        (orient == MATE_PANEL_APPLET_ORIENT_LEFT) ?
-                                        270.0 : 90.0);
-                        break;
-                default:
-                        break;
-        }*/
         }
         gtk_box_pack_start(GTK_BOX(to), item, FALSE, FALSE, 0);
         return TRUE;
@@ -830,14 +804,7 @@ static gboolean swap_orient_cb(GtkWidget *item, gpointer data)
 static gboolean reorient_box_cb(GtkWidget *menuitem, gpointer data)
 {
         GtkWidget *from = g_object_get_data(G_OBJECT(menuitem), "box");
-        GtkWidget *to = (packdirection == GTK_PACK_DIRECTION_LTR)
-                            ?
-                            //#if GTK_CHECK_VERSION (3, 0, 0)
-                            gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0)
-                            : gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-        //#else
-        //		gtk_hbox_new(FALSE, 0) : gtk_vbox_new(FALSE, 0);
-        //#endif
+        GtkWidget *to = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         g_object_set_data(G_OBJECT(from), "to", to);
         gtk_container_foreach(GTK_CONTAINER(from), (GtkCallback)swap_orient_cb, from);
         gtk_container_remove(GTK_CONTAINER(menuitem), from);
@@ -846,31 +813,6 @@ static gboolean reorient_box_cb(GtkWidget *menuitem, gpointer data)
         gtk_widget_show_all(menuitem);
         return TRUE;
 }
-
-/*static gboolean
-matepanelapplet_reorient_cb (GtkWidget *applet, MatePanelAppletOrient neworient,
-                gpointer data)
-{
-        GtkWidget *menubar = (GtkWidget *)data;
-        if ((((neworient == MATE_PANEL_APPLET_ORIENT_UP) ||
-                        (neworient == MATE_PANEL_APPLET_ORIENT_DOWN)) &&
-                        ((orient == MATE_PANEL_APPLET_ORIENT_LEFT) ||
-                        (orient == MATE_PANEL_APPLET_ORIENT_RIGHT))) ||
-                        (((neworient == MATE_PANEL_APPLET_ORIENT_LEFT) ||
-                        (neworient == MATE_PANEL_APPLET_ORIENT_RIGHT)) &&
-                        ((orient == MATE_PANEL_APPLET_ORIENT_UP) ||
-                        (orient == MATE_PANEL_APPLET_ORIENT_DOWN)))) {
-                packdirection = (packdirection == GTK_PACK_DIRECTION_LTR) ?
-                                GTK_PACK_DIRECTION_TTB : GTK_PACK_DIRECTION_LTR;
-                gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar),
-                                packdirection);
-                orient = neworient;
-                gtk_container_foreach(GTK_CONTAINER(menubar),
-                                (GtkCallback)reorient_box_cb, NULL);
-        }
-        orient = neworient;
-        return FALSE;
-}*/
 
 #ifdef N_
 #undef N_

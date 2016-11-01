@@ -87,9 +87,11 @@ static void native_panel_applet_init(AppIndicatorPanelApplet *self)
 
         // g_signal_connect_after(menubar, "draw", G_CALLBACK(menubar_on_draw), menubar);
         gtk_container_set_border_width(GTK_CONTAINER(menubar), 1);
-
+    
+        gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
+                                          INDICATOR_ICONS_DIR);
         load_modules(menubar, &indicators_loaded);
-        // load_indicators_from_indicator_files(menubar, &indicators_loaded);
+        //load_indicators_from_indicator_files(menubar, &indicators_loaded);
         if (indicators_loaded == 0) {
                 /* A label to allow for click through */
                 GtkWidget *item = gtk_label_new(_("No Indicators"));

@@ -1,4 +1,4 @@
-AC_INIT([budgie-indicator-applet], 0.0.4, [fossfreedom@ubuntu.com], [budgie-indicator-applet], [https://github.com/budgie-remix/budgie-indicator-applet])
+AC_INIT([budgie-indicator-applet], 0.0.5, [fossfreedom@ubuntu.com], [budgie-indicator-applet], [https://github.com/budgie-remix/budgie-indicator-applet])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wno-portability no-dist-gzip dist-xz foreign subdir-objects])
 AC_PROG_CC

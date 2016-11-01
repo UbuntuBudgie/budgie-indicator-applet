@@ -1,10 +1,16 @@
+budgie-indicator-applet (0.0.5) xenial; urgency=medium
+
+  * hide nm-applet
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Tue, 01 Nov 2016 23:45:45 +0000
+
 budgie-indicator-applet (0.0.4) xenial; urgency=medium
 
   * override CSS for menuitem to make applet background transparent
     for in-built theme
   * override CSS for menuitem to ensure padding is fixed to 0px
 
- -- David Mohammed <fossfreedom@gmail.com>  Mon, 31 Oct 2016 21:46:18 +0000
+ -- David Mohammed <fossfreedom@ubuntu.com>  Mon, 31 Oct 2016 21:46:18 +0000
 
 budgie-indicator-applet (0.0.3) xenial; urgency=medium
 
