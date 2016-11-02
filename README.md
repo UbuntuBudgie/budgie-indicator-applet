@@ -50,3 +50,7 @@ Enhancements
  Use the following to run GTK Inspector - use to investigate CSS and other properties
  
      GTK_DEBUG=interactive budgie-panel --replace
+     
+ Use the following to print out g_debug messages i.e. use "zzz" in the g_debug to show in the grep filter
+ 
+     G_MESSAGES_DEBUG=all budgie-panel --replace | grep "zzz"
