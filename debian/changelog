@@ -1,39 +1,6 @@
-budgie-indicator-applet (0.0.6) xenial; urgency=medium
+budgie-indicator-applet (0.1) xenial; urgency=medium
 
-  * code-base cleanup
-
- -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 05 Nov 2016 23:21:53 +0000
-
-budgie-indicator-applet (0.0.5) xenial; urgency=medium
-
-  * hide nm-applet
-
- -- David Mohammed <fossfreedom@ubuntu.com>  Tue, 01 Nov 2016 23:45:45 +0000
-
-budgie-indicator-applet (0.0.4) xenial; urgency=medium
-
-  * override CSS for menuitem to make applet background transparent
-    for in-built theme
-  * override CSS for menuitem to ensure padding is fixed to 0px
-
- -- David Mohammed <fossfreedom@ubuntu.com>  Mon, 31 Oct 2016 21:46:18 +0000
-
-budgie-indicator-applet (0.0.3) xenial; urgency=medium
-
-  * hard-code applet to use raven styleprovider so that menus are not 
-    transparent
-
- -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 30 Oct 2016 14:31:57 +0000
-
-budgie-indicator-applet (0.0.2) xenial; urgency=medium
-
-  * README and debian/control dependency
-
- -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 29 Oct 2016 14:24:35 +0100
-
-budgie-indicator-applet (0.0.1) xenial; urgency=medium
-
-  * Initial release
+  * Initial release. (Closes: #804192)
 
  -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 29 Oct 2016 10:41:27 +0200
 

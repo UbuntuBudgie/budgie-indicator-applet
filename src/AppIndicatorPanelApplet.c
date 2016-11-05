@@ -14,11 +14,13 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//#include <budgie-desktop/plugin.h>
-//#include <gobject/gobject.h>
-//#include <glib-object.h>
-#include "AppIndicatorApplet.h"    // for __budgie_unused__
+/** 
+ * note budgie-desktop/applet.h needs to appear first otherwise compilation issues
+ * will occur
+ */ 
+
 #include <budgie-desktop/applet.h> // for BUDGIE_APPLET, BUDGIE_TYPE_APPLET
+#include "AppIndicatorApplet.h"    // for __budgie_unused__
 
 G_BEGIN_DECLS
 

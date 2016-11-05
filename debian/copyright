@@ -2,11 +2,6 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: budgie-indicator-applet
 Source: https://github.com/budgie-remix/budgie-indicator-applet
 
-Files: src/eggaccelerators.c,
-    src/eggaccelerators.h
-Copyright: 2002  Red Hat, Inc.; Copyright 1998, 2001 Tim Janik
-License: GPL-2+
-
 Files: src/applet-main.c
 Copyright: 2009-2010 Canonical Ltd., 2016 David Mohammed
 License: GPL-3
