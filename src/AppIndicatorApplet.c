@@ -1,23 +1,17 @@
 /**
- * Copyright (C) 2016 Ikey Doherty
+ * Copyright (C) 2016 David Mohammed
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 3, as published
+ * by the Free Software Foundation.
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranties of
+ * MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <budgie-desktop/plugin.h>
@@ -30,7 +24,7 @@ G_BEGIN_DECLS
 /**
  * Define our loader cruft
  */
-#define NATIVE_TYPE_APPLET appindicator_applet_get_type()
+#define APPINDICATOR_TYPE_APPLET appindicator_applet_get_type()
 G_DECLARE_FINAL_TYPE(AppIndicatorApplet, appindicator_applet, NATIVE, APPLET, GObject)
 
 G_END_DECLS
@@ -38,7 +32,7 @@ G_END_DECLS
 /**
  * Found in AppIndicatorPanelApplet.c
  */
-extern void native_panel_applet_register_type(GTypeModule *module);
+extern void appindicator_panel_applet_register_type(GTypeModule *module);
 
 /**
  * This is apparently our instance
@@ -53,7 +47,7 @@ struct _AppIndicatorApplet {
 static BudgieApplet *appindicator_applet_get_panel_widget(__budgie_unused__ BudgiePlugin *self,
                                                           __budgie_unused__ gchar *uuid)
 {
-        return native_panel_applet_new();
+        return appindicator_panel_applet_new();
 }
 
 /**
@@ -91,13 +85,13 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorApplet, appindicator_applet, G_TYPE_O
 
 /**
  * Export the types back to peas. Note how we extern'd the function above
- * to make use of native_panel_applet_register_type, ensuring everything is
+ * to make use of appindicator_panel_applet_register_type, ensuring everything is
  * exported to the type system.
  */
 G_MODULE_EXPORT void peas_register_types(PeasObjectModule *module)
 {
         appindicator_applet_register_type(G_TYPE_MODULE(module));
-        native_panel_applet_init_gtype(G_TYPE_MODULE(module));
+        appindicator_panel_applet_init_gtype(G_TYPE_MODULE(module));
 
-        peas_object_module_register_extension_type(module, BUDGIE_TYPE_PLUGIN, NATIVE_TYPE_APPLET);
+        peas_object_module_register_extension_type(module, BUDGIE_TYPE_PLUGIN, APPINDICATOR_TYPE_APPLET);
 }

@@ -8,12 +8,13 @@ appindicatorapplet_LTLIBRARIES = \
 	libappindicatorapplet.la
 
 libappindicatorapplet_la_SOURCES = \
-	AppIndicatorApplet.c \
-	AppIndicatorApplet.h \
-	AppIndicatorPanelApplet.c \
 	applet-main.c \
 	eggaccelerators.c \
-	eggaccelerators.h
+	eggaccelerators.h \
+	AppIndicatorApplet.c \
+	AppIndicatorApplet.h \
+	AppIndicatorPanelApplet.c
+	
 
 libappindicatorapplet_la_CFLAGS = \
 	$(BUDGIE_PLUGIN_CFLAGS) \

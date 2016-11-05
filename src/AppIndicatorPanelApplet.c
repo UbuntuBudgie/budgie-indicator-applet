@@ -1,42 +1,28 @@
 /**
- * Copyright (C) 2016 Ikey Doherty
+ * Copyright (C) 2016 David Mohammed
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 3, as published
+ * by the Free Software Foundation.
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranties of
+ * MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <budgie-desktop/plugin.h>
-#include <gobject/gobject.h>
-
-#include "AppIndicatorApplet.h"
+//#include <budgie-desktop/plugin.h>
+//#include <gobject/gobject.h>
+//#include <glib-object.h>
+#include <budgie-desktop/applet.h>  // for BUDGIE_APPLET, BUDGIE_TYPE_APPLET
+#include "AppIndicatorApplet.h"     // for __budgie_unused__
 
 G_BEGIN_DECLS
 
 void load_modules(GtkWidget *menubar, gint *indicators_loaded);
-
-void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_loaded);
-
-gboolean menubar_on_draw(GtkWidget *widget, cairo_t *cr, GtkWidget *menubar);
-
-static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "libsoundmenu.so",
-                                    "libdatetime.so",    "libsession.so",   NULL };
-
-static GtkPackDirection packdirection;
 
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
@@ -46,8 +32,8 @@ static GtkPackDirection packdirection;
 /**
  * Define our type, which is a BudgieApplet extension
  */
-#define NATIVE_TYPE_PANEL_APPLET native_panel_applet_get_type()
-G_DECLARE_FINAL_TYPE(AppIndicatorPanelApplet, native_panel_applet, NATIVE, PANEL_APPLET,
+#define APPINDICATOR_TYPE_PANEL_APPLET appindicator_panel_applet_get_type()
+G_DECLARE_FINAL_TYPE(AppIndicatorPanelApplet, appindicator_panel_applet, NATIVE, PANEL_APPLET,
                      BudgieApplet)
 
 G_END_DECLS
@@ -55,9 +41,9 @@ G_END_DECLS
 /**
  * Pass properties here too if you wish
  */
-BudgieApplet *native_panel_applet_new(void)
+BudgieApplet *appindicator_panel_applet_new(void)
 {
-        return BUDGIE_APPLET(g_object_new(NATIVE_TYPE_PANEL_APPLET, NULL));
+        return BUDGIE_APPLET(g_object_new(APPINDICATOR_TYPE_PANEL_APPLET, NULL));
 }
 
 /**
@@ -70,9 +56,8 @@ struct _AppIndicatorPanelApplet {
 /**
  * Initialise this applet instance. For now just throw on a label :)
  */
-static void native_panel_applet_init(AppIndicatorPanelApplet *self)
+static void appindicator_panel_applet_init(AppIndicatorPanelApplet *self)
 {
-        GtkWidget *label = NULL;
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
 
@@ -83,15 +68,13 @@ static void native_panel_applet_init(AppIndicatorPanelApplet *self)
         gtk_container_add(GTK_CONTAINER(self), eventbox);
         gtk_widget_show(eventbox);
 
-        // gtk_widget_set_can_focus (menubar, TRUE);
-
-        // g_signal_connect_after(menubar, "draw", G_CALLBACK(menubar_on_draw), menubar);
         gtk_container_set_border_width(GTK_CONTAINER(menubar), 1);
     
         gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
                                           INDICATOR_ICONS_DIR);
+        
         load_modules(menubar, &indicators_loaded);
-        //load_indicators_from_indicator_files(menubar, &indicators_loaded);
+        
         if (indicators_loaded == 0) {
                 /* A label to allow for click through */
                 GtkWidget *item = gtk_label_new(_("No Indicators"));
@@ -110,11 +93,11 @@ static void native_panel_applet_init(AppIndicatorPanelApplet *self)
  * Unused in our implementation. Feel free to override class methods of
  * BudgieApplet here.
  */
-static void native_panel_applet_class_init(__budgie_unused__ AppIndicatorPanelAppletClass *cls)
+static void appindicator_panel_applet_class_init(__budgie_unused__ AppIndicatorPanelAppletClass *cls)
 {
 }
 
-static void native_panel_applet_class_finalize(__budgie_unused__ AppIndicatorPanelAppletClass *cls)
+static void appindicator_panel_applet_class_finalize(__budgie_unused__ AppIndicatorPanelAppletClass *cls)
 {
 }
 
@@ -122,13 +105,13 @@ static void native_panel_applet_class_finalize(__budgie_unused__ AppIndicatorPan
  * This is us now doing the implementation chain ups..
  */
 
-G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorPanelApplet, native_panel_applet, BUDGIE_TYPE_APPLET,
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorPanelApplet, appindicator_panel_applet, BUDGIE_TYPE_APPLET,
                                0, )
 
 /**
  * Work around the register types issue.
  */
-void native_panel_applet_init_gtype(GTypeModule *module)
+void appindicator_panel_applet_init_gtype(GTypeModule *module)
 {
-        native_panel_applet_register_type(module);
+        appindicator_panel_applet_register_type(module);
 }
