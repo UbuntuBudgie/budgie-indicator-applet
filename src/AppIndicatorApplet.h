@@ -24,7 +24,7 @@
 #include <gtk/gtk.h>
 //#include <stdlib.h>
 //#include <string.h>
-#include <budgie-desktop/applet.h>  // for BudgieApplet
+#include <budgie-desktop/applet.h> // for BudgieApplet
 //#include "libindicator3-0.4/libindicator/indicator-object.h"
 
 #define __budgie_unused__ __attribute__((unused))

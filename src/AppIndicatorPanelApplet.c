@@ -17,8 +17,8 @@
 //#include <budgie-desktop/plugin.h>
 //#include <gobject/gobject.h>
 //#include <glib-object.h>
-#include <budgie-desktop/applet.h>  // for BUDGIE_APPLET, BUDGIE_TYPE_APPLET
-#include "AppIndicatorApplet.h"     // for __budgie_unused__
+#include "AppIndicatorApplet.h"    // for __budgie_unused__
+#include <budgie-desktop/applet.h> // for BUDGIE_APPLET, BUDGIE_TYPE_APPLET
 
 G_BEGIN_DECLS
 
@@ -69,12 +69,11 @@ static void appindicator_panel_applet_init(AppIndicatorPanelApplet *self)
         gtk_widget_show(eventbox);
 
         gtk_container_set_border_width(GTK_CONTAINER(menubar), 1);
-    
-        gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
-                                          INDICATOR_ICONS_DIR);
-        
+
+        gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), INDICATOR_ICONS_DIR);
+
         load_modules(menubar, &indicators_loaded);
-        
+
         if (indicators_loaded == 0) {
                 /* A label to allow for click through */
                 GtkWidget *item = gtk_label_new(_("No Indicators"));
@@ -93,11 +92,13 @@ static void appindicator_panel_applet_init(AppIndicatorPanelApplet *self)
  * Unused in our implementation. Feel free to override class methods of
  * BudgieApplet here.
  */
-static void appindicator_panel_applet_class_init(__budgie_unused__ AppIndicatorPanelAppletClass *cls)
+static void appindicator_panel_applet_class_init(
+    __budgie_unused__ AppIndicatorPanelAppletClass *cls)
 {
 }
 
-static void appindicator_panel_applet_class_finalize(__budgie_unused__ AppIndicatorPanelAppletClass *cls)
+static void appindicator_panel_applet_class_finalize(
+    __budgie_unused__ AppIndicatorPanelAppletClass *cls)
 {
 }
 
@@ -105,8 +106,8 @@ static void appindicator_panel_applet_class_finalize(__budgie_unused__ AppIndica
  * This is us now doing the implementation chain ups..
  */
 
-G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorPanelApplet, appindicator_panel_applet, BUDGIE_TYPE_APPLET,
-                               0, )
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorPanelApplet, appindicator_panel_applet,
+                               BUDGIE_TYPE_APPLET, 0, )
 
 /**
  * Work around the register types issue.

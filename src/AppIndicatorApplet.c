@@ -93,5 +93,7 @@ G_MODULE_EXPORT void peas_register_types(PeasObjectModule *module)
         appindicator_applet_register_type(G_TYPE_MODULE(module));
         appindicator_panel_applet_init_gtype(G_TYPE_MODULE(module));
 
-        peas_object_module_register_extension_type(module, BUDGIE_TYPE_PLUGIN, APPINDICATOR_TYPE_APPLET);
+        peas_object_module_register_extension_type(module,
+                                                   BUDGIE_TYPE_PLUGIN,
+                                                   APPINDICATOR_TYPE_APPLET);
 }

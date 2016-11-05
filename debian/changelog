@@ -1,3 +1,9 @@
+budgie-indicator-applet (0.0.6) xenial; urgency=medium
+
+  * code-base cleanup
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 05 Nov 2016 23:21:53 +0000
+
 budgie-indicator-applet (0.0.5) xenial; urgency=medium
 
   * hide nm-applet

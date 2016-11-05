@@ -22,17 +22,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <config.h>
-#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include <libindicator/indicator-object.h>
-
-/* For new style indicators */
-#if HAVE_INDICATOR_NG
-#include <libido/libido.h>
-#include <libindicator/indicator-ng.h>
-#endif
 
 static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "libsoundmenu.so",
                                     "libdatetime.so",    "libsession.so",   NULL };
@@ -51,46 +45,13 @@ static void update_accessible_desc(IndicatorObjectEntry *entry, GtkWidget *menui
 /*************
  * log files
  * ***********/
-#ifdef INDICATOR_APPLET
 #define LOG_FILE_NAME "indicator-applet.log"
-#endif
-#ifdef INDICATOR_APPLET_COMPLETE
-#define LOG_FILE_NAME "indicator-applet-complete.log"
-#endif
-#ifdef INDICATOR_APPLET_APPMENU
-#define LOG_FILE_NAME "indicator-applet-appmenu.log"
-#endif
 GOutputStream *log_file = NULL;
 
-/*****************
- * Hotkey support
- * **************/
-/*#ifdef INDICATOR_APPLET
-gchar *hotkey_keycode = "<Super>M";
-#endif
-#ifdef INDICATOR_APPLET_SESSION
-gchar *hotkey_keycode = "<Super>S";
-#endif
-#ifdef INDICATOR_APPLET_COMPLETE
-gchar *hotkey_keycode = "<Super>S";
-#endif
-*/
-/*#ifdef INDICATOR_APPLET_APPMENU
-gchar * hotkey_keycode = "<Super>F1";
-#endif
-*/
 /********************
  * Environment Names
  * *******************/
-#ifdef INDICATOR_APPLET
 #define INDICATOR_SPECIFIC_ENV "indicator-applet-original"
-#endif
-#ifdef INDICATOR_APPLET_COMPLETE
-#define INDICATOR_SPECIFIC_ENV "indicator-applet-complete"
-#endif
-#ifdef INDICATOR_APPLET_APPMENU
-#define INDICATOR_SPECIFIC_ENV "indicator-applet-appmenu"
-#endif
 
 static const gchar *indicator_env[] = { "indicator-applet", INDICATOR_SPECIFIC_ENV, NULL };
 
@@ -248,13 +209,13 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         gboolean something_sensitive = FALSE;
         GtkStyleContext *context;
         GtkCssProvider *css_provider = NULL;
-        
+
         /*
          * we don't want to have the nm-applet being displayed
          * budgie-desktop provides this
          */
         if (strstr(entry->name_hint, "nm-applet") != NULL) {
-            return;
+                return;
         }
         g_debug("zzz %s", entry->name_hint);
 
@@ -370,7 +331,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                 gtk_widget_show(menuitem);
         }
         gtk_widget_set_sensitive(menuitem, something_sensitive);
-        
+
         g_object_set_data(G_OBJECT(menuitem), MENU_DATA_INDICATOR_ENTRY, entry);
         g_object_set_data(G_OBJECT(menuitem), MENU_DATA_INDICATOR_OBJECT, io);
 
@@ -521,15 +482,8 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         /* Set the environment it's in */
         indicator_object_set_environment(io, (const GStrv)indicator_env);
         g_debug("zzz load_indicator %s", name);
-/* Attach the 'name' to the object */
-#if HAVE_INDICATOR_NG
-        int pos = 5000 - indicator_object_get_position(io);
-        if (pos > 5000) {
-                pos = name2order(name);
-        }
-#else
+        /* Attach the 'name' to the object */
         int pos = name2order(name);
-#endif
 
         g_object_set_data(G_OBJECT(io), IO_DATA_ORDER_NUMBER, GINT_TO_POINTER(pos));
 
@@ -558,7 +512,7 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         /* Work on the entries */
         GList *entries = indicator_object_get_entries(io);
         GList *entry = NULL;
-    
+
         for (entry = entries; entry != NULL; entry = g_list_next(entry)) {
                 IndicatorObjectEntry *entrydata = (IndicatorObjectEntry *)entry->data;
                 entry_added(io, entrydata, menubar);
@@ -596,23 +550,15 @@ void load_modules(GtkWidget *menubar, gint *indicators_loaded)
                 const gchar *name;
                 gint count = 0;
                 while ((name = g_dir_read_name(dir)) != NULL) {
-#ifdef INDICATOR_APPLET_APPMENU
-                        if (g_strcmp0(name, "libappmenu.so")) {
-                                continue;
-                        }
-#else
                         if (!g_strcmp0(name, "libappmenu.so")) {
                                 continue;
                         }
-#endif
-#ifdef INDICATOR_APPLET
                         if (!g_strcmp0(name, "libme.so")) {
                                 continue;
                         }
                         if (!g_strcmp0(name, "libdatetime.so")) {
                                 continue;
                         }
-#endif
                         g_debug("zzz a: %s", name);
                         if (load_module(name, menubar)) {
                                 count++;
@@ -624,68 +570,6 @@ void load_modules(GtkWidget *menubar, gint *indicators_loaded)
                 g_dir_close(dir);
         }
 }
-
-#if HAVE_INDICATOR_NG
-
-#define INDICATOR_SERVICE_DIR "/usr/share/unity/indicators"
-
-void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_loaded)
-{
-        GDir *dir;
-        const gchar *name;
-        GError *error = NULL;
-
-        dir = g_dir_open(INDICATOR_SERVICE_DIR, 0, &error);
-
-        if (!dir) {
-                g_warning("unable to open indicator service file directory: %s", error->message);
-                g_error_free(error);
-
-                return;
-        }
-
-        gint count = 0;
-        while ((name = g_dir_read_name(dir))) {
-                gchar *filename;
-                IndicatorNg *indicator;
-
-                filename = g_build_filename(INDICATOR_SERVICE_DIR, name, NULL);
-                indicator = indicator_ng_new_for_profile(filename, "desktop", &error);
-                g_free(filename);
-
-#ifdef INDICATOR_APPLET_APPMENU
-                if (g_strcmp0(name, "com.canonical.indicator.appmenu")) {
-                        continue;
-                }
-#else
-                if (!g_strcmp0(name, "com.canonical.indicator.appmenu")) {
-                        continue;
-                }
-#endif
-#ifdef INDICATOR_APPLET
-                if (!g_strcmp0(name, "com.canonical.indicator.me")) {
-                        continue;
-                }
-                if (!g_strcmp0(name, "com.canonical.indicator.datetime")) {
-                        continue;
-                }
-#endif
-
-                if (indicator) {
-                        g_debug("zzz b: %s", name);
-                        load_indicator(menubar, INDICATOR_OBJECT(indicator), name);
-                        count++;
-                } else {
-                        g_warning("zzz unable to load '%s': %s", name, error->message);
-                        g_clear_error(&error);
-                }
-        }
-
-        *indicators_loaded += count;
-
-        g_dir_close(dir);
-}
-#endif /* HAVE_INDICATOR_NG */
 
 void hotkey_filter(char *keystring G_GNUC_UNUSED, gpointer data)
 {

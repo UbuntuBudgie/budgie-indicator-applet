@@ -32,9 +32,9 @@ TODO
 -----
 
  - [x] Applet background needs to use panel colour for inbuilt-theme 
- - [ ] Code cleanup - copyright statements, unused code, change boilerplate budgie-applet
- - [ ] Correct debian/copyright
- - [ ] check all the build dependencies are actually needed
+ - [x] Code cleanup - copyright statements, unused code, change boilerplate budgie-applet
+ - [x] Correct debian/copyright
+ - [x] check all the build dependencies are actually needed
 
 Enhancements
 -----
