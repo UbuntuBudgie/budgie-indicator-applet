@@ -214,8 +214,14 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
          * we don't want to have the nm-applet being displayed
          * budgie-desktop provides this
          */
-        if (strstr(entry->name_hint, "nm-applet") != NULL) {
-                return;
+        if (entry->name_hint != NULL) {
+            if (strstr(entry->name_hint, "nm-applet") != NULL) {
+                    return;
+            }
+        }
+        else {
+            g_debug("zzz no name_hint");
+            return;
         }
         g_debug("zzz %s", entry->name_hint);
 
