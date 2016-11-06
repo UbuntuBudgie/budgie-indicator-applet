@@ -9,7 +9,8 @@ Build-Depends: debhelper (>= 9),
                libgtk-3-dev,
                libindicator3-dev,
                libpeas-dev,
-               budgie-core-dev
+               budgie-core-dev,
+               libido3-0.1-dev
 Standards-Version: 3.9.8
 Homepage: https://github.com/budgie-remix/budgie-indicator-applet
 Vcs-Browser: https://github.com/budgie-remix/budgie-indicator-applet/tree/debian
