@@ -2,19 +2,18 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: budgie-indicator-applet
 Source: https://github.com/budgie-remix/budgie-indicator-applet
 
+Files: *
+Copyright: 2016, David Mohammed <fossfreedom@ubuntu.com>
+License: GPL-2+
+
 Files: src/applet-main.c
 Copyright: 2009-2010 Canonical Ltd., 2016 David Mohammed
 License: GPL-3
 
-Files: src/AppIndicatorApplet.c,
-    src/AppIndicatorPanelApplet.c
+Files: src/AppIndicatorApplet.c
+       src/AppIndicatorPanelApplet.c
 Copyright: 2016 David Mohammed
 License: GPL-3
-
-Files: *
-       debian/*
-Copyright: 2016, David Mohammed <fossfreedom@ubuntu.com>
-License: GPL-2+
 
 LICENSE: GPL-2+
  This library is free software; you can redistribute it and/or

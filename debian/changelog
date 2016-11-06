@@ -1,6 +1,6 @@
-budgie-indicator-applet (0.1) xenial; urgency=medium
+budgie-indicator-applet (0.1-1) unstable; urgency=medium
 
-  * Initial release. (Closes: #804192)
+  * Initial release. (Closes: #843340)
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 29 Oct 2016 10:41:27 +0200
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 06 Nov 2016 00:20:27 +0200
 
