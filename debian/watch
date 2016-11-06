@@ -1,3 +1,7 @@
 version=3
-opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/budgie-indicator-applet-$1\.tar\.gz/ \
-  https://github.com/budgie-remix/budgie-indicator-applet/tags .*/v?(\d\S*)\.tar\.gz
+opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/budgie-indicator-applet-$1\.tar\.gz/,\
+pgpsigurlmangle=s/github.com/raw.githubusercontent.com/;\
+s/archive/debian/;\
+s/([^\/]+)\.tar\.gz/$1\.tar\.gz/;\
+s/$/.asc/ \
+ https://github.com/budgie-remix/budgie-indicator-applet/tags .*/v?(\d\S*)\.tar\.gz
