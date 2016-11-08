@@ -3,8 +3,6 @@ budgie-indicator-applet
 
 AppIndicator applet for budgie-desktop.
 
-Note: It is intended that the applet replaces the system-tray - not to run both side-by-side
-
 *Help required to resolve the TODO and ENHANCEMENTS lists*
 
 
