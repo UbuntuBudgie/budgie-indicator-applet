@@ -14,15 +14,11 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/** 
- * note budgie-desktop/applet.h needs to appear first otherwise compilation issues
- * will occur
- */ 
+#define _GNU_SOURCE
 
-#include <budgie-desktop/applet.h> // for BUDGIE_APPLET, BUDGIE_TYPE_APPLET
-#include "AppIndicatorApplet.h"    // for __budgie_unused__
-
-G_BEGIN_DECLS
+#include <budgie-desktop/plugin.h>
+#include <gobject/gobject.h>
+#include "applet.h"
 
 void load_modules(GtkWidget *menubar, gint *indicators_loaded);
 void
@@ -34,34 +30,39 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
 
 #define IO_DATA_ORDER_NUMBER "indicator-order-number"
 
-/**
- * Define our type, which is a BudgieApplet extension
- */
-#define APPINDICATOR_TYPE_PANEL_APPLET appindicator_panel_applet_get_type()
-G_DECLARE_FINAL_TYPE(AppIndicatorPanelApplet, appindicator_panel_applet, NATIVE, PANEL_APPLET,
-                     BudgieApplet)
 
-G_END_DECLS
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorApplet, appindicator_applet, BUDGIE_TYPE_APPLET, 0, )
 
 /**
- * Pass properties here too if you wish
+ * Handle cleanup
  */
-BudgieApplet *appindicator_panel_applet_new(void)
+static void appindicator_applet_dispose(GObject *object)
 {
-        return BUDGIE_APPLET(g_object_new(APPINDICATOR_TYPE_PANEL_APPLET, NULL));
+        G_OBJECT_CLASS(appindicator_applet_parent_class)->dispose(object);
 }
 
 /**
- * Simple instance tracking
+ * Class initialisation
  */
-struct _AppIndicatorPanelApplet {
-        BudgieApplet parent;
-};
+static void appindicator_applet_class_init(AppIndicatorAppletClass *klazz)
+{
+        GObjectClass *obj_class = G_OBJECT_CLASS(klazz);
+
+        /* gobject vtable hookup */
+        obj_class->dispose = appindicator_applet_dispose;
+}
 
 /**
- * Initialise this applet instance. For now just throw on a label :)
+ * We have no cleaning ourselves to do
  */
-static void appindicator_panel_applet_init(AppIndicatorPanelApplet *self)
+static void appindicator_applet_class_finalize(__budgie_unused__ AppIndicatorAppletClass *klazz)
+{
+}
+
+/**
+ * Initialisation of basic UI layout and such
+ */
+static void appindicator_applet_init(AppIndicatorApplet *self)
 {
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
@@ -88,7 +89,7 @@ static void appindicator_panel_applet_init(AppIndicatorPanelApplet *self)
 
         if (indicators_loaded == 0) {
                 /* A label to allow for click through */
-                GtkWidget *item = gtk_label_new(_("No Indicators"));
+                GtkWidget *item = gtk_label_new("No Indicators");
                 gtk_container_add(GTK_CONTAINER(eventbox), item);
                 gtk_widget_show(item);
         } else {
@@ -100,31 +101,12 @@ static void appindicator_panel_applet_init(AppIndicatorPanelApplet *self)
         gtk_widget_show_all(GTK_WIDGET(self));
 }
 
-/**
- * Unused in our implementation. Feel free to override class methods of
- * BudgieApplet here.
- */
-static void appindicator_panel_applet_class_init(
-    __budgie_unused__ AppIndicatorPanelAppletClass *cls)
+void appindicator_applet_init_gtype(GTypeModule *module)
 {
+        appindicator_applet_register_type(module);
 }
 
-static void appindicator_panel_applet_class_finalize(
-    __budgie_unused__ AppIndicatorPanelAppletClass *cls)
+BudgieApplet *appindicator_applet_new(void)
 {
-}
-
-/**
- * This is us now doing the implementation chain ups..
- */
-
-G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorPanelApplet, appindicator_panel_applet,
-                               BUDGIE_TYPE_APPLET, 0, )
-
-/**
- * Work around the register types issue.
- */
-void appindicator_panel_applet_init_gtype(GTypeModule *module)
-{
-        appindicator_panel_applet_register_type(module);
+        return g_object_new(APPINDICATOR_TYPE_NATIVE_APPLET, NULL);
 }

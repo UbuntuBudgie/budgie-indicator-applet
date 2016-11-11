@@ -9,9 +9,10 @@ appindicatorapplet_LTLIBRARIES = \
 
 libappindicatorapplet_la_SOURCES = \
 	applet-main.c \
-	AppIndicatorApplet.c \
-	AppIndicatorApplet.h \
-	AppIndicatorPanelApplet.c
+	applet.c \
+	applet.h \
+	plugin.c \
+	plugin.h
 	
 libappindicatorapplet_la_CFLAGS = \
 	$(BUDGIE_PLUGIN_CFLAGS) \

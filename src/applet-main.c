@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <libindicator/indicator-ng.h>
+//#include <libindicator/indicator-ng.h>
 #include <libindicator/indicator-object.h>
 
 static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "libsoundmenu.so",
@@ -533,6 +533,7 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         g_list_free(entries);
 }
 
+/*
 #define INDICATOR_SERVICE_DIR "/usr/share/unity/indicators"
 
 void
@@ -560,7 +561,7 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
 		indicator = indicator_ng_new_for_profile (filename, "desktop", &error);
 		g_free (filename);
 
-/*#ifdef INDICATOR_APPLET_APPMENU
+*#ifdef INDICATOR_APPLET_APPMENU
 		if (g_strcmp0(name, "com.canonical.indicator.appmenu")) {
 			continue;
 		}
@@ -577,7 +578,7 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
 			continue;
 		}
 #endif
-*/
+*
 		if (indicator) {
 			load_indicator(menubar, INDICATOR_OBJECT (indicator), name);
 			count++;
@@ -591,7 +592,7 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
 
 	g_dir_close (dir);
 }
-
+*/
 static gboolean load_module(const gchar *name, GtkWidget *menubar)
 {
         g_debug("Looking at Module: %s", name);
