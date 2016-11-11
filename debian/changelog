@@ -1,4 +1,4 @@
-budgie-indicator-applet (0.2-1ubuntu1) unstable; urgency=medium
+budgie-indicator-applet (0.2-1) unstable; urgency=medium
 
   * Initial release. (Closes: #843340)
 

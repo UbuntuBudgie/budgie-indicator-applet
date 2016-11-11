@@ -8,7 +8,11 @@ DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
 %:
-	dh $@
+	dh $@ --with autoreconf
 	
 override_dh_auto_configure:
 	dh_auto_configure -- --prefix=/usr --libdir=/usr/lib
+
+override_dh_auto_install:
+	dh_auto_install
+	find debian -name \*.la -exec rm {} \;
