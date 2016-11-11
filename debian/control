@@ -13,9 +13,9 @@ Build-Depends: debhelper (>= 9),
                budgie-core-dev,
                libido3-0.1-dev
 Standards-Version: 3.9.8
-Homepage: https://github.com/budgie-remix/budgie-indicator-applet
-Vcs-Browser: https://github.com/budgie-remix/budgie-indicator-applet/tree/debian
-Vcs-Git: https://github.com/budgie-remix/budgie-indicator-applet -b debian
+Homepage: https://github.com/UbuntuBudgie/budgie-indicator-applet
+Vcs-Browser: https://github.com/UbuntuBudgie/budgie-indicator-applet/tree/debian
+Vcs-Git: https://github.com/UbuntuBudgie/budgie-indicator-applet -b debian
 
 Package: budgie-indicator-applet
 Architecture: any
