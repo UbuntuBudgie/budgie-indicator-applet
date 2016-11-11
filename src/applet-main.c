@@ -26,6 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#include <libindicator/indicator-ng.h>
 #include <libindicator/indicator-object.h>
 
 static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "libsoundmenu.so",
@@ -218,13 +219,12 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
             if (strstr(entry->name_hint, "nm-applet") != NULL) {
                     return;
             }
+            g_debug("zzz %s", entry->name_hint);
         }
         else {
             g_debug("zzz no name_hint");
-            return;
         }
-        g_debug("zzz %s", entry->name_hint);
-
+        
         GtkWidget *menuitem = gtk_menu_item_new();
         GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 
@@ -238,8 +238,10 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         g_signal_connect(G_OBJECT(menuitem), "scroll-event", G_CALLBACK(entry_scrolled), entry);
 
         if (entry->image != NULL) {
+                g_debug("zzz have an image");
                 gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(entry->image), FALSE, FALSE, 1);
                 if (gtk_widget_get_visible(GTK_WIDGET(entry->image))) {
+                        g_debug("zzz and is visible");
                         something_visible = TRUE;
                 }
 
@@ -262,10 +264,12 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                                  menuitem);
         }
         if (entry->label != NULL) {
+                g_debug("zzz have a label");
                 gtk_label_set_angle(GTK_LABEL(entry->label), 0.0);
                 gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(entry->label), FALSE, FALSE, 1);
 
                 if (gtk_widget_get_visible(GTK_WIDGET(entry->label))) {
+                        g_debug("zzz and is visible");
                         something_visible = TRUE;
                 }
 
@@ -330,10 +334,12 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
 
         gtk_menu_shell_insert(GTK_MENU_SHELL(menubar), menuitem, position.menupos);
 
+        g_debug("zzz just about there");
         if (something_visible) {
                 if (entry->accessible_desc != NULL) {
                         update_accessible_desc(entry, menuitem);
                 }
+                g_debug("zzz final show");
                 gtk_widget_show(menuitem);
         }
         gtk_widget_set_sensitive(menuitem, something_sensitive);
@@ -525,6 +531,65 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         }
 
         g_list_free(entries);
+}
+
+#define INDICATOR_SERVICE_DIR "/usr/share/unity/indicators"
+
+void
+load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loaded)
+{
+	GDir *dir;
+	const gchar *name;
+	GError *error = NULL;
+
+	dir = g_dir_open (INDICATOR_SERVICE_DIR, 0, &error);
+
+	if (!dir) {
+		g_warning ("unable to open indicator service file directory: %s", error->message);
+		g_error_free (error);
+
+		return;
+	}
+
+	gint count = 0;
+	while ((name = g_dir_read_name (dir))) {
+		gchar *filename;
+		IndicatorNg *indicator;
+
+		filename = g_build_filename (INDICATOR_SERVICE_DIR, name, NULL);
+		indicator = indicator_ng_new_for_profile (filename, "desktop", &error);
+		g_free (filename);
+
+/*#ifdef INDICATOR_APPLET_APPMENU
+		if (g_strcmp0(name, "com.canonical.indicator.appmenu")) {
+			continue;
+		}
+#else
+		if (!g_strcmp0(name, "com.canonical.indicator.appmenu")) {
+			continue;
+		}
+#endif
+#ifdef INDICATOR_APPLET
+		if (!g_strcmp0(name, "com.canonical.indicator.me")) {
+			continue;
+		}
+		if (!g_strcmp0(name, "com.canonical.indicator.datetime")) {
+			continue;
+		}
+#endif
+*/
+		if (indicator) {
+			load_indicator(menubar, INDICATOR_OBJECT (indicator), name);
+			count++;
+		}else{
+			g_warning ("unable to load '%s': %s", name, error->message);
+			g_clear_error (&error);
+		}
+	}
+
+	*indicators_loaded += count;
+
+	g_dir_close (dir);
 }
 
 static gboolean load_module(const gchar *name, GtkWidget *menubar)

@@ -25,6 +25,9 @@
 G_BEGIN_DECLS
 
 void load_modules(GtkWidget *menubar, gint *indicators_loaded);
+void
+load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loaded);
+
 
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
@@ -75,6 +78,13 @@ static void appindicator_panel_applet_init(AppIndicatorPanelApplet *self)
         gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), INDICATOR_ICONS_DIR);
 
         load_modules(menubar, &indicators_loaded);
+        /*
+         * leave this here - this is the entry point for indicators such as 
+         * indicator-messages. Currently these indicators don't display their
+         * menu contents correctly - e.g. missing thunderbird from indicator-messages
+         * drop-down.
+         * load_indicators_from_indicator_files (menubar, &indicators_loaded);
+         */
 
         if (indicators_loaded == 0) {
                 /* A label to allow for click through */
