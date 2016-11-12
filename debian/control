@@ -20,6 +20,7 @@ Package: budgie-indicator-applet
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
+Recommends: gir1.2-appindicator3-0.1
 Description: Application Indicator for the budgie-desktop
  Package that installs an Application Indicator applet for the 
  budgie-desktop. The applet is intended to be used instead of the
