@@ -33,8 +33,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorNativePlugin, appindicator_native_plu
 static BudgieApplet *native_applet_get_panel_widget(__budgie_unused__ BudgiePlugin *self,
                                                     __budgie_unused__ gchar *uuid)
 {
-        /* TODO: Propagate the UUID to the applet */
-        return appindicator_applet_new();
+        return appindicator_applet_new(uuid);
 }
 
 /**

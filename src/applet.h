@@ -42,6 +42,7 @@ struct _AppIndicatorAppletClass {
 
 struct _AppIndicatorApplet {
         BudgieApplet parent;
+        GSettings* settings;
 };
 
 GType appindicator_applet_get_type(void);
@@ -54,6 +55,6 @@ void appindicator_applet_init_gtype(GTypeModule *module);
 /**
  * Construct a new AppIndicatorApplet
  */
-BudgieApplet *appindicator_applet_new(void);
+BudgieApplet *appindicator_applet_new(const gchar* uuid);
 
 G_END_DECLS

@@ -210,6 +210,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         gboolean something_sensitive = FALSE;
         GtkStyleContext *context;
         GtkCssProvider *css_provider = NULL;
+        GSettings *settings = NULL;
 
         /*
          * we don't want to have the nm-applet being displayed
@@ -293,29 +294,45 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         }
 
         /*
-         * override menuitem so that the background color of the applet is the same as the panel
+         * theme each indicator correctly
+         * this at the moment duplicates what happens in applet.c when the user changes the
+         * theme - need to cleanup the code to do stuff only in one place
          */
-        css_provider = gtk_css_provider_new();
-        gtk_css_provider_load_from_data(css_provider,
-                                        ".menuitem {\n"
-                                        "    -GtkMenuItem-horizontal-padding: 0;\n"
-                                        "    background: transparent;\n"
-                                        "    border-radius: 0;\n"
-                                        "    padding: 1px 1px 1px 1px;"
-                                        "    text-shadow: none;}",
-                                        -1,
-                                        NULL);
-        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
-                                           gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
-                                       GTK_STYLE_PROVIDER(css_provider),
-                                       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        settings = g_settings_new_with_path("com.solus-project.budgie-panel", "/com/solus-project/budgie-panel/");
+        if (g_settings_get_boolean(settings, "builtin-theme")) {
+            /*
+             * override menuitem so that the background color of the applet is the same as the panel
+             */
+            css_provider = gtk_css_provider_new();
+            gtk_css_provider_load_from_data(css_provider,
+                                            ".menuitem {\n"
+                                            "    -GtkMenuItem-horizontal-padding: 0;\n"
+                                            "    background: transparent;\n"
+                                            "    border-radius: 0;\n"
+                                            "    padding: 1px 1px 1px 1px;"
+                                            "    text-shadow: none;}",
+                                            -1,
+                                            NULL);
+            gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
+                                               gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
+                                           GTK_STYLE_PROVIDER(css_provider),
+                                           GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+                                           
+            g_object_unref (css_provider);
 
-        /* for the appindicator (menuitem) we need to style it with raven otherwise
-         * all submenus are transparent
-        */
-        context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-        gtk_style_context_add_class(context, "raven");
-
+            /* for the appindicator (menuitem) we need to style it with raven otherwise
+             * all submenus are transparent
+            */
+            context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+            gtk_style_context_add_class(context, "raven");
+            g_debug("zzz adding raven");
+        }
+        else {
+            context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+            gtk_style_context_remove_class(context, "menubar");
+            g_debug("zzz removing menubar");
+        }
+        
         gtk_container_add(GTK_CONTAINER(menuitem), box);
         gtk_widget_show(box);
 
@@ -593,6 +610,7 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
 	g_dir_close (dir);
 }
 */
+
 static gboolean load_module(const gchar *name, GtkWidget *menubar)
 {
         g_debug("Looking at Module: %s", name);
