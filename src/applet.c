@@ -86,7 +86,7 @@ static void style_in_menu(GtkWidget *menuitem, gpointer user_data) {
      * all submenus are transparent
     */
     context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-    gtk_style_context_add_class(context, "raven");
+    gtk_style_context_add_class(context, "budgie-polkit-dialog");
     
 }
 

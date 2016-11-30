@@ -134,18 +134,21 @@ static void place_in_menu(GtkWidget *widget, gpointer user_data)
 
 static void something_shown(GtkWidget *widget, gpointer user_data)
 {
+        g_debug("zzz something shown");
         GtkWidget *menuitem = GTK_WIDGET(user_data);
         gtk_widget_show(menuitem);
 }
 
 static void something_hidden(GtkWidget *widget, gpointer user_data)
 {
+        g_debug("zzz something hidden");
         GtkWidget *menuitem = GTK_WIDGET(user_data);
         gtk_widget_hide(menuitem);
 }
 
 static void sensitive_cb(GObject *obj, GParamSpec *pspec, gpointer user_data)
 {
+        g_debug("zzz something made sensitive");
         g_return_if_fail(GTK_IS_WIDGET(obj));
         g_return_if_fail(GTK_IS_WIDGET(user_data));
 
@@ -320,12 +323,12 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                                            
             g_object_unref (css_provider);
 
-            /* for the appindicator (menuitem) we need to style it with raven otherwise
+            /* for the appindicator (menuitem) we need to style it with budgie-polkit-dialog otherwise
              * all submenus are transparent
             */
             context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-            gtk_style_context_add_class(context, "raven");
-            g_debug("zzz adding raven");
+            gtk_style_context_add_class(context, "budgie-polkit-dialog");
+            g_debug("zzz adding budgie-polkit-dialog");
         }
         else {
             context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
