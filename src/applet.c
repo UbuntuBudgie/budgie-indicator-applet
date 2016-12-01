@@ -59,7 +59,20 @@ static void appindicator_applet_class_finalize(__budgie_unused__ AppIndicatorApp
 {
 }
 
-static void style_in_menu(GtkWidget *menuitem, gpointer user_data) {
+static void custom_style_in_menu(GtkWidget *menuitem, gpointer user_data) {
+    GtkCssProvider *css_provider = NULL;
+    GtkStyleContext *context;
+
+    /* for the appindicator (menuitem) we need to style it with the background style
+    */
+    context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+    gtk_style_context_remove_class(context, "budgie-polkit-dialog");
+    gtk_style_context_add_class(context, "background");
+    
+}
+
+
+static void inbuilt_style_in_menu(GtkWidget *menuitem, gpointer user_data) {
     GtkCssProvider *css_provider = NULL;
     GtkStyleContext *context;
 
@@ -68,12 +81,11 @@ static void style_in_menu(GtkWidget *menuitem, gpointer user_data) {
      */
     css_provider = gtk_css_provider_new();
     gtk_css_provider_load_from_data(css_provider,
-                                    ".menuitem {\n"
-                                    "    -GtkMenuItem-horizontal-padding: 0;\n"
-                                    "    background: transparent;\n"
-                                    "    border-radius: 0;\n"
-                                    "    padding: 1px 1px 1px 1px;"
-                                    "    text-shadow: none;}",
+                                    ".menuitem { \n"
+                                    "    background: transparent; \n"
+                                    "    border-radius: 0; \n"
+                                    "    padding: 1px 1px 1px 1px; \n"
+                                    "    text-shadow: none;} \n",
                                     -1,
                                     NULL);
     gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
@@ -86,6 +98,7 @@ static void style_in_menu(GtkWidget *menuitem, gpointer user_data) {
      * all submenus are transparent
     */
     context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+    gtk_style_context_remove_class(context, "background");
     gtk_style_context_add_class(context, "budgie-polkit-dialog");
     
 }
@@ -104,7 +117,7 @@ static void builtin_theme_changed(gpointer user_data, gchar *key, GSettings *set
             g_debug("zzz adding menubar");
             
             
-            gtk_container_foreach(GTK_CONTAINER(menubar), style_in_menu, NULL);
+            gtk_container_foreach(GTK_CONTAINER(menubar), inbuilt_style_in_menu, NULL);
             
             g_debug("zzz set");
         }
@@ -113,6 +126,7 @@ static void builtin_theme_changed(gpointer user_data, gchar *key, GSettings *set
             
             context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
             gtk_style_context_remove_class(context, "menubar");
+            gtk_container_foreach(GTK_CONTAINER(menubar), custom_style_in_menu, NULL);
             g_debug("zzz removing menubar");
         }
 }

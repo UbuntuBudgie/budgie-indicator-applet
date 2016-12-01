@@ -308,12 +308,11 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
              */
             css_provider = gtk_css_provider_new();
             gtk_css_provider_load_from_data(css_provider,
-                                            ".menuitem {\n"
-                                            "    -GtkMenuItem-horizontal-padding: 0;\n"
-                                            "    background: transparent;\n"
-                                            "    border-radius: 0;\n"
-                                            "    padding: 1px 1px 1px 1px;"
-                                            "    text-shadow: none;}",
+                                            ".menuitem { \n"
+                                            "    background: transparent; \n"
+                                            "    border-radius: 0; \n"
+                                            "    padding: 1px 1px 1px 1px; \n"
+                                            "    text-shadow: none;} \n",
                                             -1,
                                             NULL);
             gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
@@ -333,6 +332,9 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         else {
             context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
             gtk_style_context_remove_class(context, "menubar");
+            context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+            gtk_style_context_add_class(context, "background");
+            
             g_debug("zzz removing menubar");
         }
         
