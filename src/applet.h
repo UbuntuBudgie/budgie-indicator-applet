@@ -27,13 +27,15 @@ typedef struct _AppIndicatorApplet AppIndicatorApplet;
 typedef struct _AppIndicatorAppletClass AppIndicatorAppletClass;
 
 #define APPINDICATOR_TYPE_NATIVE_APPLET appindicator_applet_get_type()
-#define APPINDICATOR_NATIVE_APPLET(o)                                                                   \
+#define APPINDICATOR_NATIVE_APPLET(o)                                                              \
         (G_TYPE_CHECK_INSTANCE_CAST((o), APPINDICATOR_TYPE_NATIVE_APPLET, AppIndicatorApplet))
-#define APPINDICATOR_IS_NATIVE_APPLET(o) (G_TYPE_CHECK_INSTANCE_TYPE((o), APPINDICATOR_TYPE_NATIVE_APPLET))
-#define APPINDICATOR_NATIVE_APPLET_CLASS(o)                                                             \
+#define APPINDICATOR_IS_NATIVE_APPLET(o)                                                           \
+        (G_TYPE_CHECK_INSTANCE_TYPE((o), APPINDICATOR_TYPE_NATIVE_APPLET))
+#define APPINDICATOR_NATIVE_APPLET_CLASS(o)                                                        \
         (G_TYPE_CHECK_CLASS_CAST((o), APPINDICATOR_TYPE_NATIVE_APPLET, AppIndicatorAppletClass))
-#define APPINDICATOR_IS_NATIVE_APPLET_CLASS(o) (G_TYPE_CHECK_CLASS_TYPE((o), APPINDICATOR_TYPE_NATIVE_APPLET))
-#define APPINDICATOR_NATIVE_APPLET_GET_CLASS(o)                                                         \
+#define APPINDICATOR_IS_NATIVE_APPLET_CLASS(o)                                                     \
+        (G_TYPE_CHECK_CLASS_TYPE((o), APPINDICATOR_TYPE_NATIVE_APPLET))
+#define APPINDICATOR_NATIVE_APPLET_GET_CLASS(o)                                                    \
         (G_TYPE_INSTANCE_GET_CLASS((o), APPINDICATOR_TYPE_NATIVE_APPLET, AppIndicatorAppletClass))
 
 struct _AppIndicatorAppletClass {
@@ -42,7 +44,7 @@ struct _AppIndicatorAppletClass {
 
 struct _AppIndicatorApplet {
         BudgieApplet parent;
-        GSettings* settings;
+        GSettings *settings;
 };
 
 GType appindicator_applet_get_type(void);
@@ -55,6 +57,6 @@ void appindicator_applet_init_gtype(GTypeModule *module);
 /**
  * Construct a new AppIndicatorApplet
  */
-BudgieApplet *appindicator_applet_new(const gchar* uuid);
+BudgieApplet *appindicator_applet_new(const gchar *uuid);
 
 G_END_DECLS

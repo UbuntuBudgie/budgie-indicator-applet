@@ -206,13 +206,14 @@ static void accessible_desc_update(IndicatorObject *io, IndicatorObjectEntry *en
         return;
 }
 
+GtkCssProvider *css_provider = NULL;
+
 static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWidget *menubar)
 {
         g_debug("zzz Signal: Entry Added");
         gboolean something_visible = FALSE;
         gboolean something_sensitive = FALSE;
         GtkStyleContext *context;
-        GtkCssProvider *css_provider = NULL;
         GSettings *settings = NULL;
 
         /*
@@ -220,15 +221,14 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
          * budgie-desktop provides this
          */
         if (entry->name_hint != NULL) {
-            if (strstr(entry->name_hint, "nm-applet") != NULL) {
-                    return;
-            }
-            g_debug("zzz %s", entry->name_hint);
+                if (strstr(entry->name_hint, "nm-applet") != NULL) {
+                        return;
+                }
+                g_debug("zzz %s", entry->name_hint);
+        } else {
+                g_debug("zzz no name_hint");
         }
-        else {
-            g_debug("zzz no name_hint");
-        }
-        
+
         GtkWidget *menuitem = gtk_menu_item_new();
         GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
 
@@ -301,43 +301,89 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
          * this at the moment duplicates what happens in applet.c when the user changes the
          * theme - need to cleanup the code to do stuff only in one place
          */
-        settings = g_settings_new_with_path("com.solus-project.budgie-panel", "/com/solus-project/budgie-panel/");
-        if (g_settings_get_boolean(settings, "builtin-theme")) {
-            /*
-             * override menuitem so that the background color of the applet is the same as the panel
-             */
-            css_provider = gtk_css_provider_new();
-            gtk_css_provider_load_from_data(css_provider,
-                                            ".menuitem { \n"
-                                            "    background: transparent; \n"
-                                            "    border-radius: 0; \n"
-                                            "    padding: 1px 1px 1px 1px; \n"
-                                            "    text-shadow: none;} \n",
-                                            -1,
-                                            NULL);
-            gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
-                                               gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
-                                           GTK_STYLE_PROVIDER(css_provider),
-                                           GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-                                           
-            g_object_unref (css_provider);
+        settings = g_settings_new_with_path("com.solus-project.budgie-panel",
+                                            "/com/solus-project/budgie-panel/");
 
-            /* for the appindicator (menuitem) we need to style it with budgie-polkit-dialog otherwise
-             * all submenus are transparent
-            */
-            context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-            gtk_style_context_add_class(context, "budgie-polkit-dialog");
-            g_debug("zzz adding budgie-polkit-dialog");
+        if (g_settings_get_boolean(settings, "builtin-theme")) {
+                /*
+				 * override menuitem so that the background color of the applet is the same as the panel
+				 */
+                if (css_provider == NULL) {
+                        css_provider = gtk_css_provider_new();
+#if GTK_CHECK_VERSION(3, 20, 0)
+                        gtk_css_provider_load_from_data(css_provider,
+                                                        "menuitem { \n"
+                                                        "    background: transparent; \n"
+                                                        "    border-radius: 0; \n"
+                                                        "    padding: 1px 2px 1px 1px; \n"
+                                                        "    text-shadow: none;} \n",
+                                                        -1,
+                                                        NULL);
+#else
+                        gtk_css_provider_load_from_data(css_provider,
+                                                        ".menuitem { \n"
+                                                        "    background: transparent; \n"
+                                                        "    border-radius: 0; \n"
+                                                        "    padding: 1px 2px 1px 1px; \n"
+                                                        "    text-shadow: none;} \n",
+                                                        -1,
+                                                        NULL);
+#endif
+                }
+                gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+                                                   GTK_WIDGET(menuitem))),
+                                               GTK_STYLE_PROVIDER(css_provider),
+                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+
+                /* for the appindicator (menuitem) we need to style it with budgie-polkit-dialog
+                 * otherwise
+                 * all submenus are transparent
+                */
+                context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+                gtk_style_context_add_class(context, "budgie-polkit-dialog");
+                g_debug("zzz adding budgie-polkit-dialog");
+        } else {
+                /*
+				 * override menuitem so that the background color of the applet is the same as the panel
+				 */
+                if (css_provider == NULL) {
+                        css_provider = gtk_css_provider_new();
+#if GTK_CHECK_VERSION(3, 20, 0)
+                        gtk_css_provider_load_from_data(css_provider,
+                                                        "menuitem { \n"
+                                                        "    border-radius: 0; \n"
+                                                        "    padding: 1px 2px 1px 1px; \n"
+                                                        "    text-shadow: none;} \n",
+                                                        -1,
+                                                        NULL);
+#else
+                        gtk_css_provider_load_from_data(css_provider,
+                                                        ".menuitem { \n"
+                                                        "    border-radius: 0; \n"
+                                                        "    padding: 1px 2px 1px 1px; \n"
+                                                        "    text-shadow: none;} \n",
+                                                        -1,
+                                                        NULL);
+#endif
+                }
+                gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+                                                   GTK_WIDGET(menuitem))),
+                                               GTK_STYLE_PROVIDER(css_provider),
+                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+
+                /*
+                 * for user defined panel theme we should just use the background style
+                 */
+                context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+                gtk_style_context_remove_class(context, "menubar");
+                context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+                gtk_style_context_add_class(context, "background");
+
+                g_debug("zzz removing menubar");
         }
-        else {
-            context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
-            gtk_style_context_remove_class(context, "menubar");
-            context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-            gtk_style_context_add_class(context, "background");
-            
-            g_debug("zzz removing menubar");
-        }
-        
+
         gtk_container_add(GTK_CONTAINER(menuitem), box);
         gtk_widget_show(box);
 
@@ -561,58 +607,58 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
 void
 load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loaded)
 {
-	GDir *dir;
-	const gchar *name;
-	GError *error = NULL;
+        GDir *dir;
+        const gchar *name;
+        GError *error = NULL;
 
-	dir = g_dir_open (INDICATOR_SERVICE_DIR, 0, &error);
+        dir = g_dir_open (INDICATOR_SERVICE_DIR, 0, &error);
 
-	if (!dir) {
-		g_warning ("unable to open indicator service file directory: %s", error->message);
-		g_error_free (error);
+        if (!dir) {
+                g_warning ("unable to open indicator service file directory: %s", error->message);
+                g_error_free (error);
 
-		return;
-	}
+                return;
+        }
 
-	gint count = 0;
-	while ((name = g_dir_read_name (dir))) {
-		gchar *filename;
-		IndicatorNg *indicator;
+        gint count = 0;
+        while ((name = g_dir_read_name (dir))) {
+                gchar *filename;
+                IndicatorNg *indicator;
 
-		filename = g_build_filename (INDICATOR_SERVICE_DIR, name, NULL);
-		indicator = indicator_ng_new_for_profile (filename, "desktop", &error);
-		g_free (filename);
+                filename = g_build_filename (INDICATOR_SERVICE_DIR, name, NULL);
+                indicator = indicator_ng_new_for_profile (filename, "desktop", &error);
+                g_free (filename);
 
 *#ifdef INDICATOR_APPLET_APPMENU
-		if (g_strcmp0(name, "com.canonical.indicator.appmenu")) {
-			continue;
-		}
+                if (g_strcmp0(name, "com.canonical.indicator.appmenu")) {
+                        continue;
+                }
 #else
-		if (!g_strcmp0(name, "com.canonical.indicator.appmenu")) {
-			continue;
-		}
+                if (!g_strcmp0(name, "com.canonical.indicator.appmenu")) {
+                        continue;
+                }
 #endif
 #ifdef INDICATOR_APPLET
-		if (!g_strcmp0(name, "com.canonical.indicator.me")) {
-			continue;
-		}
-		if (!g_strcmp0(name, "com.canonical.indicator.datetime")) {
-			continue;
-		}
+                if (!g_strcmp0(name, "com.canonical.indicator.me")) {
+                        continue;
+                }
+                if (!g_strcmp0(name, "com.canonical.indicator.datetime")) {
+                        continue;
+                }
 #endif
 *
-		if (indicator) {
-			load_indicator(menubar, INDICATOR_OBJECT (indicator), name);
-			count++;
-		}else{
-			g_warning ("unable to load '%s': %s", name, error->message);
-			g_clear_error (&error);
-		}
-	}
+                if (indicator) {
+                        load_indicator(menubar, INDICATOR_OBJECT (indicator), name);
+                        count++;
+                }else{
+                        g_warning ("unable to load '%s': %s", name, error->message);
+                        g_clear_error (&error);
+                }
+        }
 
-	*indicators_loaded += count;
+        *indicators_loaded += count;
 
-	g_dir_close (dir);
+        g_dir_close (dir);
 }
 */
 

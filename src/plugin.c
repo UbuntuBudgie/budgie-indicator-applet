@@ -23,7 +23,8 @@
 
 static void appindicator_native_plugin_iface_init(BudgiePluginIface *iface);
 
-G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorNativePlugin, appindicator_native_plugin, G_TYPE_OBJECT, 0,
+G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorNativePlugin, appindicator_native_plugin, G_TYPE_OBJECT,
+                               0,
                                G_IMPLEMENT_INTERFACE_DYNAMIC(BUDGIE_TYPE_PLUGIN,
                                                              appindicator_native_plugin_iface_init))
 
@@ -73,7 +74,8 @@ static void appindicator_native_plugin_init(__budgie_unused__ AppIndicatorNative
 /**
  * We have no cleaning ourselves to do
  */
-static void appindicator_native_plugin_class_finalize(__budgie_unused__ AppIndicatorNativePluginClass *klazz)
+static void appindicator_native_plugin_class_finalize(
+    __budgie_unused__ AppIndicatorNativePluginClass *klazz)
 {
 }
 

@@ -24,14 +24,20 @@ typedef struct _AppIndicatorNativePlugin AppIndicatorNativePlugin;
 typedef struct _AppIndicatorNativePluginClass AppIndicatorNativePluginClass;
 
 #define APPINDICATOR_TYPE_NATIVE_PLUGIN appindicator_native_plugin_get_type()
-#define APPINDICATOR_NATIVE_PLUGIN(o)                                                                   \
+#define APPINDICATOR_NATIVE_PLUGIN(o)                                                              \
         (G_TYPE_CHECK_INSTANCE_CAST((o), APPINDICATOR_TYPE_NATIVE_PLUGIN, AppIndicatorNativePlugin))
-#define APPINDICATOR_IS_NATIVE_PLUGIN(o) (G_TYPE_CHECK_INSTANCE_TYPE((o), APPINDICATOR_TYPE_NATIVE_PLUGIN))
-#define APPINDICATOR_NATIVE_PLUGIN_CLASS(o)                                                             \
-        (G_TYPE_CHECK_CLASS_CAST((o), APPINDICATOR_TYPE_NATIVE_PLUGIN, AppIndicatorNativePluginClass))
-#define APPINDICATOR_IS_NATIVE_PLUGIN_CLASS(o) (G_TYPE_CHECK_CLASS_TYPE((o), APPINDICATOR_TYPE_NATIVE_PLUGIN))
-#define APPINDICATOR_NATIVE_PLUGIN_GET_CLASS(o)                                                         \
-        (G_TYPE_INSTANCE_GET_CLASS((o), APPINDICATOR_TYPE_NATIVE_PLUGIN, AppIndicatorNativePluginClass))
+#define APPINDICATOR_IS_NATIVE_PLUGIN(o)                                                           \
+        (G_TYPE_CHECK_INSTANCE_TYPE((o), APPINDICATOR_TYPE_NATIVE_PLUGIN))
+#define APPINDICATOR_NATIVE_PLUGIN_CLASS(o)                                                        \
+        (G_TYPE_CHECK_CLASS_CAST((o),                                                              \
+                                 APPINDICATOR_TYPE_NATIVE_PLUGIN,                                  \
+                                 AppIndicatorNativePluginClass))
+#define APPINDICATOR_IS_NATIVE_PLUGIN_CLASS(o)                                                     \
+        (G_TYPE_CHECK_CLASS_TYPE((o), APPINDICATOR_TYPE_NATIVE_PLUGIN))
+#define APPINDICATOR_NATIVE_PLUGIN_GET_CLASS(o)                                                    \
+        (G_TYPE_INSTANCE_GET_CLASS((o),                                                            \
+                                   APPINDICATOR_TYPE_NATIVE_PLUGIN,                                \
+                                   AppIndicatorNativePluginClass))
 
 struct _AppIndicatorNativePluginClass {
         GObjectClass parent_class;

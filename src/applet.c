@@ -16,22 +16,21 @@
 
 #define _GNU_SOURCE
 
+#include "applet.h"
 #include <budgie-desktop/plugin.h>
 #include <gobject/gobject.h>
-#include "applet.h"
 
 void load_modules(GtkWidget *menubar, gint *indicators_loaded);
-void
-load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loaded);
-
+void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_loaded);
 
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
 
 #define IO_DATA_ORDER_NUMBER "indicator-order-number"
 
-
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorApplet, appindicator_applet, BUDGIE_TYPE_APPLET, 0, )
+
+extern GtkCssProvider *css_provider;
 
 /**
  * Handle cleanup
@@ -39,6 +38,10 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorApplet, appindicator_applet, BUDGIE_T
 static void appindicator_applet_dispose(GObject *object)
 {
         G_OBJECT_CLASS(appindicator_applet_parent_class)->dispose(object);
+        if (css_provider != NULL) {
+			g_object_unref (css_provider);
+			css_provider = NULL;
+		}
 }
 
 /**
@@ -59,75 +62,111 @@ static void appindicator_applet_class_finalize(__budgie_unused__ AppIndicatorApp
 {
 }
 
-static void custom_style_in_menu(GtkWidget *menuitem, gpointer user_data) {
-    GtkCssProvider *css_provider = NULL;
-    GtkStyleContext *context;
+static void custom_style_in_menu(GtkWidget *menuitem, gpointer user_data)
+{
+        GtkStyleContext *context;
 
-    /* for the appindicator (menuitem) we need to style it with the background style
-    */
-    context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-    gtk_style_context_remove_class(context, "budgie-polkit-dialog");
-    gtk_style_context_add_class(context, "background");
-    
+        /*
+         * override menuitem so that the background color of the applet is the same as the panel
+         */
+        gtk_style_context_remove_provider(GTK_STYLE_CONTEXT(
+                                              gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
+                                          css_provider);
+#if GTK_CHECK_VERSION(3, 20, 0)
+        gtk_css_provider_load_from_data(css_provider,
+                                        "menuitem { \n"
+                                        "    border-radius: 0; \n"
+                                        "    padding: 1px 2px 1px 1px; \n"
+                                        "    text-shadow: none;} \n",
+                                        -1,
+                                        NULL);
+#else
+        gtk_css_provider_load_from_data(css_provider,
+                                        ".menuitem { \n"
+                                        "    border-radius: 0; \n"
+                                        "    padding: 1px 2px 1px 1px; \n"
+                                        "    text-shadow: none;} \n",
+                                        -1,
+                                        NULL);
+#endif
+        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
+                                           gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
+                                       GTK_STYLE_PROVIDER(css_provider),
+                                       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+
+        /* for the appindicator (menuitem) we need to style it with the background style
+        */
+        context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+        gtk_style_context_remove_class(context, "budgie-polkit-dialog");
+        gtk_style_context_add_class(context, "background");
 }
 
+static void inbuilt_style_in_menu(GtkWidget *menuitem, gpointer user_data)
+{
+        GtkStyleContext *context;
 
-static void inbuilt_style_in_menu(GtkWidget *menuitem, gpointer user_data) {
-    GtkCssProvider *css_provider = NULL;
-    GtkStyleContext *context;
+        /*
+         * override menuitem so that the background color of the applet is the same as the panel
+         */
+        gtk_style_context_remove_provider(GTK_STYLE_CONTEXT(
+                                              gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
+                                          css_provider);
+#if GTK_CHECK_VERSION(3, 20, 0)
+        gtk_css_provider_load_from_data(css_provider,
+                                        "menuitem { \n"
+                                        "    background: transparent; \n"
+                                        "    border-radius: 0; \n"
+                                        "    padding: 1px 2px 1px 1px; \n"
+                                        "    text-shadow: none;} \n",
+                                        -1,
+                                        NULL);
+#else
+        gtk_css_provider_load_from_data(css_provider,
+                                        ".menuitem { \n"
+                                        "    background: transparent; \n"
+                                        "    border-radius: 0; \n"
+                                        "    padding: 1px 2px 1px 1px; \n"
+                                        "    text-shadow: none;} \n",
+                                        -1,
+                                        NULL);
+#endif
+        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
+                                           gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
+                                       GTK_STYLE_PROVIDER(css_provider),
+                                       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-    /*
-     * override menuitem so that the background color of the applet is the same as the panel
-     */
-    css_provider = gtk_css_provider_new();
-    gtk_css_provider_load_from_data(css_provider,
-                                    ".menuitem { \n"
-                                    "    background: transparent; \n"
-                                    "    border-radius: 0; \n"
-                                    "    padding: 1px 1px 1px 1px; \n"
-                                    "    text-shadow: none;} \n",
-                                    -1,
-                                    NULL);
-    gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
-                                       gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
-                                   GTK_STYLE_PROVIDER(css_provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-    g_object_unref (css_provider);
-    /* for the appindicator (menuitem) we need to style it with raven otherwise
-     * all submenus are transparent
-    */
-    context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-    gtk_style_context_remove_class(context, "background");
-    gtk_style_context_add_class(context, "budgie-polkit-dialog");
-    
+        /* for the appindicator (menuitem) we need to style it with raven otherwise
+         * all submenus are transparent
+        */
+        context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+        gtk_style_context_remove_class(context, "background");
+        gtk_style_context_add_class(context, "budgie-polkit-dialog");
 }
 
-static void builtin_theme_changed(gpointer user_data, gchar *key, GSettings *settings )
+static void builtin_theme_changed(gpointer user_data, gchar *key, GSettings *settings)
 {
         GtkWidget *menubar = (GtkWidget *)user_data;
         GtkStyleContext *context;
-        
+
         g_debug("zzz builtin_theme");
         g_debug("zzz builtin_theme_changed %s", key);
-        
+
         if (g_settings_get_boolean(settings, key)) {
-            context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
-            gtk_style_context_add_class(context, "menubar");
-            g_debug("zzz adding menubar");
-            
-            
-            gtk_container_foreach(GTK_CONTAINER(menubar), inbuilt_style_in_menu, NULL);
-            
-            g_debug("zzz set");
-        }
-        else {
-            g_debug("zzz notset");
-            
-            context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
-            gtk_style_context_remove_class(context, "menubar");
-            gtk_container_foreach(GTK_CONTAINER(menubar), custom_style_in_menu, NULL);
-            g_debug("zzz removing menubar");
+                context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+                gtk_style_context_add_class(context, "menubar");
+                g_debug("zzz adding menubar");
+
+                gtk_container_foreach(GTK_CONTAINER(menubar), inbuilt_style_in_menu, NULL);
+
+                g_debug("zzz set");
+        } else {
+                g_debug("zzz notset");
+
+                context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+                gtk_style_context_remove_class(context, "menubar");
+                gtk_container_foreach(GTK_CONTAINER(menubar), custom_style_in_menu, NULL);
+                g_debug("zzz removing menubar");
         }
 }
 
@@ -139,19 +178,22 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
         GSettings *settings = NULL;
-        
+
         gint indicators_loaded = 0;
 
         menubar = gtk_menu_bar_new();
-        
+
         /*
          * connect to the panel schema
          */
-         
+
         g_debug("zzz 2");
         settings = g_settings_new("com.solus-project.budgie-panel");
-        g_signal_connect_swapped(settings, "changed::builtin-theme", builtin_theme_changed, menubar);
-        
+        g_signal_connect_swapped(settings,
+                                 "changed::builtin-theme",
+                                 builtin_theme_changed,
+                                 menubar);
+
         eventbox = gtk_event_box_new();
         gtk_container_add(GTK_CONTAINER(self), eventbox);
         gtk_widget_show(eventbox);
@@ -162,7 +204,7 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 
         load_modules(menubar, &indicators_loaded);
         /*
-         * leave this here - this is the entry point for indicators such as 
+         * leave this here - this is the entry point for indicators such as
          * indicator-messages. Currently these indicators don't display their
          * menu contents correctly - e.g. missing thunderbird from indicator-messages
          * drop-down.
@@ -181,8 +223,8 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));
-        
-        //builtin_theme_changed(menubar, "builtin-theme", settings);
+
+        // builtin_theme_changed(menubar, "builtin-theme", settings);
 }
 
 void appindicator_applet_init_gtype(GTypeModule *module)
@@ -190,32 +232,26 @@ void appindicator_applet_init_gtype(GTypeModule *module)
         appindicator_applet_register_type(module);
 }
 
-//#define BUDGIE_APPLET(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), BUDGIE_APPLET, BudgieApplet))
 
-//struct _BudgieApplet {
-//	BudgieApplet parent_instance;
-//	GSettings* settings;
-//};
+BudgieApplet *applet_construct(GType object_type, gchar *uuid)
+{
+        BudgieApplet *self = NULL;
 
-//typedef struct _BudgieApplet BudgieApplet;
+        self = (BudgieApplet *)g_object_new(object_type, "uuid", uuid, NULL);
+        // budgie_applet_set_settings_schema ((AppIndicatorApplet*) self,
+        // "com.solus-project.budgie-panel.panel");
+        // budgie_applet_set_settings_prefix ((AppIndicatorApplet*) self,
+        // "/com/solus-project/budgie-panel/instance/panel");
+        budgie_applet_get_applet_settings(self, uuid);
+        // g_signal_connect_object (self->settings, "changed",
+        //    (GCallback) builtin_theme_changed, self, 0);
 
-
-BudgieApplet* applet_construct (GType object_type, gchar* uuid) {
-    BudgieApplet * self = NULL;
-    
-    self = (BudgieApplet*) g_object_new (object_type, "uuid", uuid, NULL);
-    //budgie_applet_set_settings_schema ((AppIndicatorApplet*) self, "com.solus-project.budgie-panel.panel");
-    //budgie_applet_set_settings_prefix ((AppIndicatorApplet*) self, "/com/solus-project/budgie-panel/instance/panel");
-    budgie_applet_get_applet_settings (self, uuid);
-    //g_signal_connect_object (self->settings, "changed", 
-    //    (GCallback) builtin_theme_changed, self, 0);
-        
-    g_debug("zzz in construct");
-    return self;
+        g_debug("zzz in construct");
+        return self;
 }
 
-BudgieApplet *appindicator_applet_new(const gchar* uuid)
+BudgieApplet *appindicator_applet_new(const gchar *uuid)
 {
         return applet_construct(APPINDICATOR_TYPE_NATIVE_APPLET, uuid);
-        //return g_object_new(APPINDICATOR_TYPE_NATIVE_APPLET, NULL);
+        // return g_object_new(APPINDICATOR_TYPE_NATIVE_APPLET, NULL);
 }
