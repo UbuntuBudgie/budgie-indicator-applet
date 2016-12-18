@@ -8,7 +8,7 @@ DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
 %:
-	dh $@ --with autoreconf
+	dh $@
 	
 override_dh_auto_configure:
 	dh_auto_configure -- --prefix=/usr --libdir=/usr/lib
