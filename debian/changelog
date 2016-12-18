@@ -1,3 +1,11 @@
+budgie-indicator-applet (0.3-1) unstable; urgency=medium
+
+  * New upstream release
+    - Respect icon spacing for chosen theme
+    - background color change when theme changes
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 18 Dec 2016 17:43:52 +0000
+
 budgie-indicator-applet (0.2-1) unstable; urgency=medium
 
   * Initial release. (Closes: #843340)
