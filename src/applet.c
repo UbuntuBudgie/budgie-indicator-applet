@@ -75,6 +75,7 @@ static void custom_style_in_menu(GtkWidget *menuitem, gpointer user_data)
 #if GTK_CHECK_VERSION(3, 20, 0)
         gtk_css_provider_load_from_data(css_provider,
                                         "menuitem { \n"
+                                        "    background: transparent; \n"
                                         "    border-radius: 0; \n"
                                         "    padding: 1px 2px 1px 1px; \n"
                                         "    text-shadow: none;} \n",
@@ -83,6 +84,7 @@ static void custom_style_in_menu(GtkWidget *menuitem, gpointer user_data)
 #else
         gtk_css_provider_load_from_data(css_provider,
                                         ".menuitem { \n"
+                                        "    background: transparent; \n"
                                         "    border-radius: 0; \n"
                                         "    padding: 1px 2px 1px 1px; \n"
                                         "    text-shadow: none;} \n",

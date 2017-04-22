@@ -352,6 +352,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
 #if GTK_CHECK_VERSION(3, 20, 0)
                         gtk_css_provider_load_from_data(css_provider,
                                                         "menuitem { \n"
+                                                        "    background: transparent; \n"
                                                         "    border-radius: 0; \n"
                                                         "    padding: 1px 2px 1px 1px; \n"
                                                         "    text-shadow: none;} \n",
@@ -360,6 +361,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
 #else
                         gtk_css_provider_load_from_data(css_provider,
                                                         ".menuitem { \n"
+                                                        "    background: transparent; \n"
                                                         "    border-radius: 0; \n"
                                                         "    padding: 1px 2px 1px 1px; \n"
                                                         "    text-shadow: none;} \n",
