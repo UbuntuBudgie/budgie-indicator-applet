@@ -1,9 +1,9 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: budgie-indicator-applet
-Source: https://github.com/budgie-remix/budgie-indicator-applet
+Source: https://github.com/UbuntuBudgie/budgie-indicator-applet
 
 Files: *
-Copyright: 2016, David Mohammed <fossfreedom@ubuntu.com>
+Copyright: 2016-2017, David Mohammed <fossfreedom@ubuntu.com>
 License: GPL-3
 
 Files: src/applet-main.c
