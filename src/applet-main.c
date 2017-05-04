@@ -303,6 +303,8 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
 		*/
 		context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
 		gtk_style_context_add_class(context, "budgie-menubar");
+        context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+        gtk_style_context_remove_class(context, "menubar");
 		g_debug("zzz adding budgie-menubar");
 
         gtk_container_add(GTK_CONTAINER(menuitem), box);
