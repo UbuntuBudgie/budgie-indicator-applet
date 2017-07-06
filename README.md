@@ -8,7 +8,7 @@ AppIndicator applet for budgie-desktop.
 
 To compile:
 
-    sudo apt install git libtool dpkg-dev, intltool, libtool, libgtk-3-dev, libido3-0.1-dev, libindicator3-dev, libpeas-dev, budgie-core-dev
+    sudo apt install git libtool dpkg-dev intltool libtool libgtk-3-dev libido3-0.1-dev libindicator3-dev libpeas-dev budgie-core-dev
     
     
     git clone https://github.com/budgie-remix/budgie-indicator-applet
