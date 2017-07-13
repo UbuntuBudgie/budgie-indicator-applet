@@ -2,7 +2,7 @@
 A small wrapper utility to load indicators and put them as menu items
 into the mate-panel using it's applet interface.
 
-Copyright 2009-2010 Canonical Ltd., 2016 David Mohammed
+Copyright 2009-2010 Canonical Ltd., 2016-2017 David Mohammed
 
 Authors:
     Ted Gould <ted@canonical.com>
@@ -296,95 +296,16 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                                  menuitem);
         }
 
-        /*
-         * theme each indicator correctly
-         * this at the moment duplicates what happens in applet.c when the user changes the
-         * theme - need to cleanup the code to do stuff only in one place
-         */
-        settings = g_settings_new_with_path("com.solus-project.budgie-panel",
-                                            "/com/solus-project/budgie-panel/");
 
-        if (g_settings_get_boolean(settings, "builtin-theme")) {
-                /*
-				 * override menuitem so that the background color of the applet is the same as the panel
-				 */
-                if (css_provider == NULL) {
-                        css_provider = gtk_css_provider_new();
-#if GTK_CHECK_VERSION(3, 20, 0)
-                        gtk_css_provider_load_from_data(css_provider,
-                                                        "menuitem { \n"
-                                                        "    background: transparent; \n"
-                                                        "    border-radius: 0; \n"
-                                                        "    padding: 1px 2px 1px 1px; \n"
-                                                        "    text-shadow: none;} \n",
-                                                        -1,
-                                                        NULL);
-#else
-                        gtk_css_provider_load_from_data(css_provider,
-                                                        ".menuitem { \n"
-                                                        "    background: transparent; \n"
-                                                        "    border-radius: 0; \n"
-                                                        "    padding: 1px 2px 1px 1px; \n"
-                                                        "    text-shadow: none;} \n",
-                                                        -1,
-                                                        NULL);
-#endif
-                }
-                gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-                                                   GTK_WIDGET(menuitem))),
-                                               GTK_STYLE_PROVIDER(css_provider),
-                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-
-                /* for the appindicator (menuitem) we need to style it with budgie-polkit-dialog
-                 * otherwise
-                 * all submenus are transparent
-                */
-                context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-                gtk_style_context_add_class(context, "budgie-polkit-dialog");
-                g_debug("zzz adding budgie-polkit-dialog");
-        } else {
-                /*
-				 * override menuitem so that the background color of the applet is the same as the panel
-				 */
-                if (css_provider == NULL) {
-                        css_provider = gtk_css_provider_new();
-#if GTK_CHECK_VERSION(3, 20, 0)
-                        gtk_css_provider_load_from_data(css_provider,
-                                                        "menuitem { \n"
-                                                        "    background: transparent; \n"
-                                                        "    border-radius: 0; \n"
-                                                        "    padding: 1px 2px 1px 1px; \n"
-                                                        "    text-shadow: none;} \n",
-                                                        -1,
-                                                        NULL);
-#else
-                        gtk_css_provider_load_from_data(css_provider,
-                                                        ".menuitem { \n"
-                                                        "    background: transparent; \n"
-                                                        "    border-radius: 0; \n"
-                                                        "    padding: 1px 2px 1px 1px; \n"
-                                                        "    text-shadow: none;} \n",
-                                                        -1,
-                                                        NULL);
-#endif
-                }
-                gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-                                                   GTK_WIDGET(menuitem))),
-                                               GTK_STYLE_PROVIDER(css_provider),
-                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-
-                /*
-                 * for user defined panel theme we should just use the background style
-                 */
-                context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
-                gtk_style_context_remove_class(context, "menubar");
-                context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-                gtk_style_context_add_class(context, "background");
-
-                g_debug("zzz removing menubar");
-        }
+		/* for the appindicator (menuitem) we need to style it with budgie-menubar
+		 * otherwise
+		 * all submenus are transparent for the system theme
+		*/
+		context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+		gtk_style_context_add_class(context, "budgie-menubar");
+        context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+        gtk_style_context_remove_class(context, "menubar");
+		g_debug("zzz adding budgie-menubar");
 
         gtk_container_add(GTK_CONTAINER(menuitem), box);
         gtk_widget_show(box);
