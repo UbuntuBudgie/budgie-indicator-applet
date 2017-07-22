@@ -69,7 +69,6 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 {
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
-        GSettings *settings = NULL;
 
         gint indicators_loaded = 0;
 
@@ -111,26 +110,8 @@ void appindicator_applet_init_gtype(GTypeModule *module)
         appindicator_applet_register_type(module);
 }
 
-
-BudgieApplet *applet_construct(GType object_type, gchar *uuid)
+BudgieApplet *appindicator_applet_new()
 {
-        BudgieApplet *self = NULL;
-
-        self = (BudgieApplet *)g_object_new(object_type, "uuid", uuid, NULL);
-        // budgie_applet_set_settings_schema ((AppIndicatorApplet*) self,
-        // "com.solus-project.budgie-panel.panel");
-        // budgie_applet_set_settings_prefix ((AppIndicatorApplet*) self,
-        // "/com/solus-project/budgie-panel/instance/panel");
-        budgie_applet_get_applet_settings(self, uuid);
-        // g_signal_connect_object (self->settings, "changed",
-        //    (GCallback) builtin_theme_changed, self, 0);
-
-        g_debug("zzz in construct");
-        return self;
-}
-
-BudgieApplet *appindicator_applet_new(const gchar *uuid)
-{
-        return applet_construct(APPINDICATOR_TYPE_NATIVE_APPLET, uuid);
-        // return g_object_new(APPINDICATOR_TYPE_NATIVE_APPLET, NULL);
+        //return applet_construct(APPINDICATOR_TYPE_NATIVE_APPLET, uuid);
+        return g_object_new(APPINDICATOR_TYPE_NATIVE_APPLET, NULL);
 }
