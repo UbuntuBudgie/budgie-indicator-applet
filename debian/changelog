@@ -3,10 +3,12 @@ budgie-indicator-applet (0.4-1) unstable; urgency=medium
   * New upstream release
     - Removing self theming since this is now handled by
       budgie-desktop v10.3.2
+    - fix startup warning
+    - add applet blacklist
   * Packaging Changes
     - Update debian/copyright for year change and repo name change
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Fri, 28 Apr 2017 19:18:55 +0100
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 22 Jul 2017 12:18:55 +0100
 
 budgie-indicator-applet (0.3-1) unstable; urgency=medium
 
