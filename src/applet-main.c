@@ -223,13 +223,12 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
          * budgie-desktop provides this
          */
         if (entry->name_hint != NULL) {
-
                 int loop = 0;
                 while (blacklist_applets[loop]) {
-                    if (strstr(entry->name_hint, blacklist_applets[loop]) != NULL) {
-                        return;
-                    }
-                    loop++;
+                        if (strstr(entry->name_hint, blacklist_applets[loop]) != NULL) {
+                                return;
+                        }
+                        loop++;
                 }
                 g_debug("zzz %s", entry->name_hint);
         } else {
@@ -303,16 +302,15 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                                  menuitem);
         }
 
-
-		/* for the appindicator (menuitem) we need to style it with budgie-menubar
-		 * otherwise
-		 * all submenus are transparent for the system theme
-		*/
-		context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
-		gtk_style_context_add_class(context, "budgie-menubar");
+        /* for the appindicator (menuitem) we need to style it with budgie-menubar
+         * otherwise
+         * all submenus are transparent for the system theme
+        */
+        context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+        gtk_style_context_add_class(context, "budgie-menubar");
         context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
         gtk_style_context_remove_class(context, "menubar");
-		g_debug("zzz adding budgie-menubar");
+        g_debug("zzz adding budgie-menubar");
 
         gtk_container_add(GTK_CONTAINER(menuitem), box);
         gtk_widget_show(box);

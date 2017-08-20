@@ -39,9 +39,9 @@ static void appindicator_applet_dispose(GObject *object)
 {
         G_OBJECT_CLASS(appindicator_applet_parent_class)->dispose(object);
         if (css_provider != NULL) {
-			g_object_unref (css_provider);
-			css_provider = NULL;
-		}
+                g_object_unref(css_provider);
+                css_provider = NULL;
+        }
 }
 
 /**
@@ -102,7 +102,6 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));
-
 }
 
 void appindicator_applet_init_gtype(GTypeModule *module)
@@ -112,6 +111,6 @@ void appindicator_applet_init_gtype(GTypeModule *module)
 
 BudgieApplet *appindicator_applet_new()
 {
-        //return applet_construct(APPINDICATOR_TYPE_NATIVE_APPLET, uuid);
+        // return applet_construct(APPINDICATOR_TYPE_NATIVE_APPLET, uuid);
         return g_object_new(APPINDICATOR_TYPE_NATIVE_APPLET, NULL);
 }
