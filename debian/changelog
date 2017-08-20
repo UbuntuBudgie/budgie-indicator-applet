@@ -20,8 +20,10 @@ budgie-indicator-applet (0.3-1) unstable; urgency=medium
   * New upstream release
     - Respect icon spacing for chosen theme
     - background color change when theme changes
-  * Packaging Changes:
-    - updated metadata for updated upstream repo name change
+  * updated metadata for updated upstream repo name change
+  * Dropped autoreconf from dh call, useless and automatic
+    in compat level 10.
+  * Update copyright file (from <tobi>).
 
  -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 18 Dec 2016 17:43:52 +0000
 
@@ -30,4 +32,3 @@ budgie-indicator-applet (0.2-1) unstable; urgency=medium
   * Initial release. (Closes: #843340)
 
  -- David Mohammed <fossfreedom@ubuntu.com>  Fri, 11 Nov 2016 21:20:27 +0200
-
