@@ -69,11 +69,15 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 {
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
+        GtkStyleContext *context;
 
         gint indicators_loaded = 0;
 
         menubar = gtk_menu_bar_new();
         eventbox = gtk_event_box_new();
+        context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+        gtk_style_context_add_class(context, "budgie-panel");
+        
         gtk_container_add(GTK_CONTAINER(self), eventbox);
         gtk_widget_show(eventbox);
 
