@@ -1,0 +1,38 @@
+Description: style with panel
+ the applet needs to be styled with the panel GTK+ style context
+ so that it blends correctly into the panel
+Author: David Mohammed <fossfreedom@ubuntu.com>
+Forwarded: not-needed
+Last-Update: 2017-10-06
+
+--- budgie-indicator-applet-0.4.orig/src/applet-main.c
++++ budgie-indicator-applet-0.4/src/applet-main.c
+@@ -308,8 +308,8 @@ static void entry_added(IndicatorObject
+         */
+         context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
+         gtk_style_context_add_class(context, "budgie-menubar");
+-        context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+-        gtk_style_context_remove_class(context, "menubar");
++        //context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
++        //gtk_style_context_remove_class(context, "menubar");
+         g_debug("zzz adding budgie-menubar");
+ 
+         gtk_container_add(GTK_CONTAINER(menuitem), box);
+--- budgie-indicator-applet-0.4.orig/src/applet.c
++++ budgie-indicator-applet-0.4/src/applet.c
+@@ -69,11 +69,15 @@ static void appindicator_applet_init(App
+ {
+         GtkWidget *eventbox = NULL;
+         GtkWidget *menubar = NULL;
++        GtkStyleContext *context;
+ 
+         gint indicators_loaded = 0;
+ 
+         menubar = gtk_menu_bar_new();
+         eventbox = gtk_event_box_new();
++        context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
++        gtk_style_context_add_class(context, "budgie-panel");
++        
+         gtk_container_add(GTK_CONTAINER(self), eventbox);
+         gtk_widget_show(eventbox);
+ 

@@ -1,3 +1,12 @@
+budgie-indicator-applet (0.4-0ubuntu2) artful; urgency=medium
+
+  * Bug-fix release (LP: #)
+    - add patch style-with-panel.patch
+      Ensure the applet is styled correctly to blend into
+      the panel
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Wed, 06 Sep 2017 22:28:32 +0100
+
 budgie-indicator-applet (0.4-0ubuntu1) artful; urgency=medium
 
   * New release (LP: #1711928)
