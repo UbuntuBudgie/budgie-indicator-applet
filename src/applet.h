@@ -57,6 +57,6 @@ void appindicator_applet_init_gtype(GTypeModule *module);
 /**
  * Construct a new AppIndicatorApplet
  */
-BudgieApplet *appindicator_applet_new(const gchar *uuid);
+BudgieApplet *appindicator_applet_new(void);
 
 G_END_DECLS

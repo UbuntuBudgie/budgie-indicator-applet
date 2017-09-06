@@ -39,9 +39,9 @@ static void appindicator_applet_dispose(GObject *object)
 {
         G_OBJECT_CLASS(appindicator_applet_parent_class)->dispose(object);
         if (css_provider != NULL) {
-			g_object_unref (css_provider);
-			css_provider = NULL;
-		}
+                g_object_unref(css_provider);
+                css_provider = NULL;
+        }
 }
 
 /**
@@ -69,12 +69,15 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 {
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
-        GSettings *settings = NULL;
+        GtkStyleContext *context;
 
         gint indicators_loaded = 0;
 
         menubar = gtk_menu_bar_new();
         eventbox = gtk_event_box_new();
+        context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+        gtk_style_context_add_class(context, "budgie-panel");
+        
         gtk_container_add(GTK_CONTAINER(self), eventbox);
         gtk_widget_show(eventbox);
 
@@ -103,7 +106,6 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));
-
 }
 
 void appindicator_applet_init_gtype(GTypeModule *module)
@@ -111,26 +113,8 @@ void appindicator_applet_init_gtype(GTypeModule *module)
         appindicator_applet_register_type(module);
 }
 
-
-BudgieApplet *applet_construct(GType object_type, gchar *uuid)
+BudgieApplet *appindicator_applet_new()
 {
-        BudgieApplet *self = NULL;
-
-        self = (BudgieApplet *)g_object_new(object_type, "uuid", uuid, NULL);
-        // budgie_applet_set_settings_schema ((AppIndicatorApplet*) self,
-        // "com.solus-project.budgie-panel.panel");
-        // budgie_applet_set_settings_prefix ((AppIndicatorApplet*) self,
-        // "/com/solus-project/budgie-panel/instance/panel");
-        budgie_applet_get_applet_settings(self, uuid);
-        // g_signal_connect_object (self->settings, "changed",
-        //    (GCallback) builtin_theme_changed, self, 0);
-
-        g_debug("zzz in construct");
-        return self;
-}
-
-BudgieApplet *appindicator_applet_new(const gchar *uuid)
-{
-        return applet_construct(APPINDICATOR_TYPE_NATIVE_APPLET, uuid);
-        // return g_object_new(APPINDICATOR_TYPE_NATIVE_APPLET, NULL);
+        // return applet_construct(APPINDICATOR_TYPE_NATIVE_APPLET, uuid);
+        return g_object_new(APPINDICATOR_TYPE_NATIVE_APPLET, NULL);
 }
