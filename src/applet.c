@@ -69,15 +69,39 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 {
         GtkWidget *eventbox = NULL;
         GtkWidget *menubar = NULL;
-        GtkStyleContext *context;
+        GtkCssProvider *css_provider = NULL;
 
         gint indicators_loaded = 0;
 
         menubar = gtk_menu_bar_new();
+        css_provider = gtk_css_provider_new();
+#if GTK_CHECK_VERSION(3, 20, 0)
+        gtk_css_provider_load_from_data(css_provider,
+                                        "menubar { \n"
+                                        "    background: transparent; } \n"
+                                        ".budgie-menubar { \n"
+                                        "    padding-left: 2px; \n"
+                                        "    padding-right: 2px; \n"
+                                        "} \n",
+                                        -1,
+                                        NULL);
+#else
+        gtk_css_provider_load_from_data(css_provider,
+                                        ".menuitem { \n"
+                                        "    background: transparent; } \n"
+                                        ".budgie-menubar { \n"
+                                        "    padding-left: 2px; \n"
+                                        "    padding-right: 2px; \n"
+                                        "} \n",
+                                        -1,
+                                        NULL);
+#endif
+        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+                                           GTK_WIDGET(menubar))),
+                                       GTK_STYLE_PROVIDER(css_provider),
+                                       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
         eventbox = gtk_event_box_new();
-        context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
-        gtk_style_context_add_class(context, "budgie-panel");
-        
         gtk_container_add(GTK_CONTAINER(self), eventbox);
         gtk_widget_show(eventbox);
 

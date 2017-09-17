@@ -216,6 +216,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         gboolean something_visible = FALSE;
         gboolean something_sensitive = FALSE;
         GtkStyleContext *context;
+        GtkCssProvider *css_provider = NULL;
         GSettings *settings = NULL;
 
         /*
@@ -249,6 +250,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
 
         if (entry->image != NULL) {
                 g_debug("zzz have an image");
+                gtk_image_set_pixel_size(entry->image, 22);
                 gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(entry->image), FALSE, FALSE, 1);
                 if (gtk_widget_get_visible(GTK_WIDGET(entry->image))) {
                         g_debug("zzz and is visible");
@@ -308,8 +310,22 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         */
         context = gtk_widget_get_style_context(GTK_WIDGET(menuitem));
         gtk_style_context_add_class(context, "budgie-menubar");
-        //context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
-        //gtk_style_context_remove_class(context, "menubar");
+        context = gtk_widget_get_style_context(GTK_WIDGET(menubar));
+        gtk_style_context_remove_class(context, "menubar");
+
+        css_provider = gtk_css_provider_new();
+        gtk_css_provider_load_from_data(css_provider,
+                                        ".budgie-menubar { \n"
+                                        "    padding-left: 2px; \n"
+                                        "    padding-right: 2px; \n"
+                                        "} \n",
+                                        -1,
+                                        NULL);
+        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
+                                           GTK_WIDGET(menuitem))),
+                                       GTK_STYLE_PROVIDER(css_provider),
+                                       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
         g_debug("zzz adding budgie-menubar");
 
         gtk_container_add(GTK_CONTAINER(menuitem), box);
