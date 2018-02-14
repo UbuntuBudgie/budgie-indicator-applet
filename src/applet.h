@@ -45,6 +45,7 @@ struct _AppIndicatorAppletClass {
 struct _AppIndicatorApplet {
         BudgieApplet parent;
         GSettings *settings;
+        GtkWidget *menubar;
 };
 
 GType appindicator_applet_get_type(void);

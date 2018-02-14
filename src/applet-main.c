@@ -34,6 +34,13 @@ static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "lib
 
 static gchar *blacklist_applets[] = { "nm-applet", 0 };
 
+// static GtkPackDirection packdirection;
+#define ORIENT_HORIZONTAL 0
+#define ORIENT_LEFT 1
+#define ORIENT_RIGHT 2
+
+static int orient = 1;
+
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
 
@@ -134,21 +141,22 @@ static void place_in_menu(GtkWidget *widget, gpointer user_data)
         return;
 }
 
-static void something_shown(GtkWidget *widget, gpointer user_data)
+static void something_shown(__attribute__((unused)) GtkWidget *widget, gpointer user_data)
 {
         g_debug("zzz something shown");
         GtkWidget *menuitem = GTK_WIDGET(user_data);
         gtk_widget_show(menuitem);
 }
 
-static void something_hidden(GtkWidget *widget, gpointer user_data)
+static void something_hidden(__attribute__((unused)) GtkWidget *widget, gpointer user_data)
 {
         g_debug("zzz something hidden");
         GtkWidget *menuitem = GTK_WIDGET(user_data);
         gtk_widget_hide(menuitem);
 }
 
-static void sensitive_cb(GObject *obj, GParamSpec *pspec, gpointer user_data)
+static void sensitive_cb(GObject *obj, __attribute__((unused)) GParamSpec *pspec,
+                         gpointer user_data)
 {
         g_debug("zzz something made sensitive");
         g_return_if_fail(GTK_IS_WIDGET(obj));
@@ -170,7 +178,8 @@ static void entry_activated(GtkWidget *widget, gpointer user_data)
                                                gtk_get_current_event_time());
 }
 
-static gboolean entry_scrolled(GtkWidget *menuitem, GdkEventScroll *event, gpointer data)
+static gboolean entry_scrolled(GtkWidget *menuitem, GdkEventScroll *event,
+                               __attribute__((unused)) gpointer data)
 {
         IndicatorObject *io = g_object_get_data(G_OBJECT(menuitem), MENU_DATA_INDICATOR_OBJECT);
         IndicatorObjectEntry *entry =
@@ -201,8 +210,8 @@ static void accessible_desc_update_cb(GtkWidget *widget, gpointer userdata)
         update_accessible_desc(entry, widget);
 }
 
-static void accessible_desc_update(IndicatorObject *io, IndicatorObjectEntry *entry,
-                                   GtkWidget *menubar)
+static void accessible_desc_update(__attribute__((unused)) IndicatorObject *io,
+                                   IndicatorObjectEntry *entry, GtkWidget *menubar)
 {
         gtk_container_foreach(GTK_CONTAINER(menubar), accessible_desc_update_cb, entry);
         return;
@@ -217,7 +226,6 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         gboolean something_sensitive = FALSE;
         GtkStyleContext *context;
         GtkCssProvider *css_provider = NULL;
-        GSettings *settings = NULL;
 
         /*
          * we don't want to have the nm-applet being displayed
@@ -237,7 +245,8 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         }
 
         GtkWidget *menuitem = gtk_menu_item_new();
-        GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
+        GtkWidget *box = (orient == ORIENT_HORIZONTAL) ? gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3)
+                                                       : gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 
         /* Allows indicators to receive mouse scroll event in GTK+3 */
         gtk_widget_add_events(GTK_WIDGET(menuitem), GDK_SCROLL_MASK);
@@ -277,7 +286,16 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         }
         if (entry->label != NULL) {
                 g_debug("zzz have a label");
-                gtk_label_set_angle(GTK_LABEL(entry->label), 0.0);
+                switch (orient) {
+                case ORIENT_HORIZONTAL:
+                        gtk_label_set_angle(GTK_LABEL(entry->label), 0.0);
+                        break;
+                case ORIENT_LEFT:
+                        gtk_label_set_angle(GTK_LABEL(entry->label), 270.0);
+                        break;
+                default:
+                        gtk_label_set_angle(GTK_LABEL(entry->label), 90.0);
+                }
                 gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(entry->label), FALSE, FALSE, 1);
 
                 if (gtk_widget_get_visible(GTK_WIDGET(entry->label))) {
@@ -321,8 +339,8 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                                         "} \n",
                                         -1,
                                         NULL);
-        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-                                           GTK_WIDGET(menuitem))),
+        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
+                                           gtk_widget_get_style_context(GTK_WIDGET(menuitem))),
                                        GTK_STYLE_PROVIDER(css_provider),
                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
@@ -460,8 +478,8 @@ static void entry_moved(IndicatorObject *io, IndicatorObjectEntry *entry, gint o
         return;
 }
 
-static void menu_show(IndicatorObject *io, IndicatorObjectEntry *entry, guint32 timestamp,
-                      gpointer user_data)
+static void menu_show(IndicatorObject *io, IndicatorObjectEntry *entry,
+                      __attribute__((unused)) guint32 timestamp, gpointer user_data)
 {
         GtkWidget *menubar = GTK_WIDGET(user_data);
 

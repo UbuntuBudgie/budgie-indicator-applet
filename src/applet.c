@@ -28,6 +28,70 @@ void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_l
 
 #define IO_DATA_ORDER_NUMBER "indicator-order-number"
 
+static GtkPackDirection packdirection;
+static BudgiePanelPosition orient;
+
+static gboolean swap_orient_cb(GtkWidget *item, gpointer data)
+{
+        GtkWidget *from = (GtkWidget *)data;
+        GtkWidget *to = (GtkWidget *)g_object_get_data(G_OBJECT(from), "to");
+        g_object_ref(G_OBJECT(item));
+        gtk_container_remove(GTK_CONTAINER(from), item);
+        if (GTK_IS_LABEL(item)) {
+                switch (packdirection) {
+                case GTK_PACK_DIRECTION_LTR:
+                        gtk_label_set_angle(GTK_LABEL(item), 0.0);
+                        break;
+                case GTK_PACK_DIRECTION_TTB:
+                        gtk_label_set_angle(GTK_LABEL(item),
+                                            (orient == BUDGIE_PANEL_POSITION_LEFT) ? 270.0 : 90.0);
+                        break;
+                default:
+                        break;
+                }
+        }
+        gtk_box_pack_start(GTK_BOX(to), item, FALSE, FALSE, 0);
+        return TRUE;
+}
+
+static gboolean reorient_box_cb(GtkWidget *menuitem, gpointer data)
+{
+        GtkWidget *from = g_object_get_data(G_OBJECT(menuitem), "box");
+        GtkWidget *to = (packdirection == GTK_PACK_DIRECTION_LTR)
+                            ? gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0)
+                            : gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+        g_object_set_data(G_OBJECT(from), "to", to);
+        gtk_container_foreach(GTK_CONTAINER(from), (GtkCallback)swap_orient_cb, from);
+        gtk_container_remove(GTK_CONTAINER(menuitem), from);
+        gtk_container_add(GTK_CONTAINER(menuitem), to);
+        g_object_set_data(G_OBJECT(menuitem), "box", to);
+        gtk_widget_show_all(menuitem);
+        return TRUE;
+}
+
+static void native_applet_real_panel_position_changed(BudgieApplet *base,
+                                                      BudgiePanelPosition position)
+{
+        AppIndicatorApplet *self;
+        self = (AppIndicatorApplet *)base;
+
+        GtkWidget *menubar = self->menubar;
+        orient = position;
+
+        switch (position) {
+        case BUDGIE_PANEL_POSITION_LEFT:
+        case BUDGIE_PANEL_POSITION_RIGHT:
+                packdirection = GTK_PACK_DIRECTION_TTB;
+                break;
+        default:
+                packdirection = GTK_PACK_DIRECTION_LTR;
+        }
+
+        gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar), packdirection);
+
+        gtk_container_foreach(GTK_CONTAINER(menubar), (GtkCallback)reorient_box_cb, NULL);
+}
+
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorApplet, appindicator_applet, BUDGIE_TYPE_APPLET, 0, )
 
 extern GtkCssProvider *css_provider;
@@ -53,6 +117,10 @@ static void appindicator_applet_class_init(AppIndicatorAppletClass *klazz)
 
         /* gobject vtable hookup */
         obj_class->dispose = appindicator_applet_dispose;
+
+        ((BudgieAppletClass *)klazz)->panel_position_changed =
+            (void (*)(BudgieApplet *,
+                      BudgiePanelPosition))native_applet_real_panel_position_changed;
 }
 
 /**
@@ -74,6 +142,9 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
         gint indicators_loaded = 0;
 
         menubar = gtk_menu_bar_new();
+        self->menubar = menubar;
+        gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar),
+                                        GTK_PACK_DIRECTION_TTB); // GTK_PACK_DIRECTION_LTR
         css_provider = gtk_css_provider_new();
 #if GTK_CHECK_VERSION(3, 20, 0)
         gtk_css_provider_load_from_data(css_provider,
@@ -96,8 +167,8 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
                                         -1,
                                         NULL);
 #endif
-        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(gtk_widget_get_style_context(
-                                           GTK_WIDGET(menubar))),
+        gtk_style_context_add_provider(GTK_STYLE_CONTEXT(
+                                           gtk_widget_get_style_context(GTK_WIDGET(menubar))),
                                        GTK_STYLE_PROVIDER(css_provider),
                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
