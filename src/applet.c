@@ -17,6 +17,7 @@
 #define _GNU_SOURCE
 
 #include "applet.h"
+#include <assert.h>
 #include <budgie-desktop/plugin.h>
 #include <gobject/gobject.h>
 
@@ -28,8 +29,8 @@ void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_l
 
 #define IO_DATA_ORDER_NUMBER "indicator-order-number"
 
-static GtkPackDirection packdirection;
-static BudgiePanelPosition orient;
+extern GtkPackDirection packdirection;
+extern BudgiePanelPosition orient;
 
 static gboolean swap_orient_cb(GtkWidget *item, gpointer data)
 {
@@ -76,20 +77,30 @@ static void native_applet_real_panel_position_changed(BudgieApplet *base,
         self = (AppIndicatorApplet *)base;
 
         GtkWidget *menubar = self->menubar;
-        orient = position;
 
         switch (position) {
+        case BUDGIE_PANEL_POSITION_NONE:
+                g_debug("zzz changed none");
+
+                break;
         case BUDGIE_PANEL_POSITION_LEFT:
         case BUDGIE_PANEL_POSITION_RIGHT:
+                orient = position;
                 packdirection = GTK_PACK_DIRECTION_TTB;
+                g_debug("zzz changed left/right");
+
                 break;
         default:
+                g_debug("zzz changed horizontal");
+                orient = position;
                 packdirection = GTK_PACK_DIRECTION_LTR;
         }
 
-        gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar), packdirection);
+        if (orient != BUDGIE_PANEL_POSITION_NONE) {
+                gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar), packdirection);
 
-        gtk_container_foreach(GTK_CONTAINER(menubar), (GtkCallback)reorient_box_cb, NULL);
+                gtk_container_foreach(GTK_CONTAINER(menubar), (GtkCallback)reorient_box_cb, NULL);
+        }
 }
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorApplet, appindicator_applet, BUDGIE_TYPE_APPLET, 0, )
@@ -130,21 +141,38 @@ static void appindicator_applet_class_finalize(__budgie_unused__ AppIndicatorApp
 {
 }
 
+static GtkWidget *eventbox = NULL;
+static GtkWidget *menubar = NULL;
+
+static gboolean delay_load_indicators(gpointer data)
+{
+        gint indicators_loaded = 0;
+
+        gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar), packdirection);
+        load_modules(menubar, &indicators_loaded);
+
+        if (indicators_loaded == 0) {
+                /* A label to allow for click through */
+                GtkWidget *item = gtk_label_new("No Indicators");
+                gtk_container_add(GTK_CONTAINER(eventbox), item);
+                gtk_widget_show(item);
+        } else {
+                gtk_container_add(GTK_CONTAINER(eventbox), menubar);
+                gtk_widget_show(menubar);
+        }
+        return FALSE;
+}
+
 /**
  * Initialisation of basic UI layout and such
  */
 static void appindicator_applet_init(AppIndicatorApplet *self)
 {
-        GtkWidget *eventbox = NULL;
-        GtkWidget *menubar = NULL;
         GtkCssProvider *css_provider = NULL;
-
-        gint indicators_loaded = 0;
 
         menubar = gtk_menu_bar_new();
         self->menubar = menubar;
-        gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar),
-                                        GTK_PACK_DIRECTION_TTB); // GTK_PACK_DIRECTION_LTR
+
         css_provider = gtk_css_provider_new();
 #if GTK_CHECK_VERSION(3, 20, 0)
         gtk_css_provider_load_from_data(css_provider,
@@ -180,7 +208,6 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 
         gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), INDICATOR_ICONS_DIR);
 
-        load_modules(menubar, &indicators_loaded);
         /*
          * leave this here - this is the entry point for indicators such as
          * indicator-messages. Currently these indicators don't display their
@@ -189,18 +216,10 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
          * load_indicators_from_indicator_files (menubar, &indicators_loaded);
          */
 
-        if (indicators_loaded == 0) {
-                /* A label to allow for click through */
-                GtkWidget *item = gtk_label_new("No Indicators");
-                gtk_container_add(GTK_CONTAINER(eventbox), item);
-                gtk_widget_show(item);
-        } else {
-                gtk_container_add(GTK_CONTAINER(eventbox), menubar);
-                gtk_widget_show(menubar);
-        }
-
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));
+
+        g_timeout_add_seconds(1, delay_load_indicators, NULL);
 }
 
 void appindicator_applet_init_gtype(GTypeModule *module)

@@ -27,6 +27,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <gtk/gtk.h>
 
 //#include <libindicator/indicator-ng.h>
+#include <budgie-desktop/plugin.h>
 #include <libindicator/indicator-object.h>
 
 static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "libsoundmenu.so",
@@ -34,12 +35,8 @@ static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "lib
 
 static gchar *blacklist_applets[] = { "nm-applet", 0 };
 
-// static GtkPackDirection packdirection;
-#define ORIENT_HORIZONTAL 0
-#define ORIENT_LEFT 1
-#define ORIENT_RIGHT 2
-
-static int orient = 1;
+BudgiePanelPosition orient = BUDGIE_PANEL_POSITION_NONE;
+GtkPackDirection packdirection = GTK_ORIENTATION_HORIZONTAL;
 
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
@@ -245,8 +242,10 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         }
 
         GtkWidget *menuitem = gtk_menu_item_new();
-        GtkWidget *box = (orient == ORIENT_HORIZONTAL) ? gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3)
-                                                       : gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
+        GtkWidget *box =
+            (orient == BUDGIE_PANEL_POSITION_TOP || orient == BUDGIE_PANEL_POSITION_BOTTOM)
+                ? gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3)
+                : gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 
         /* Allows indicators to receive mouse scroll event in GTK+3 */
         gtk_widget_add_events(GTK_WIDGET(menuitem), GDK_SCROLL_MASK);
@@ -287,14 +286,15 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
         if (entry->label != NULL) {
                 g_debug("zzz have a label");
                 switch (orient) {
-                case ORIENT_HORIZONTAL:
-                        gtk_label_set_angle(GTK_LABEL(entry->label), 0.0);
-                        break;
-                case ORIENT_LEFT:
+                case BUDGIE_PANEL_POSITION_LEFT:
                         gtk_label_set_angle(GTK_LABEL(entry->label), 270.0);
                         break;
-                default:
+                case BUDGIE_PANEL_POSITION_RIGHT:
                         gtk_label_set_angle(GTK_LABEL(entry->label), 90.0);
+                        break;
+                default:
+                        // g_assert(1==2);
+                        gtk_label_set_angle(GTK_LABEL(entry->label), 0.0);
                 }
                 gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(entry->label), FALSE, FALSE, 1);
 
