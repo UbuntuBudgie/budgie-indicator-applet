@@ -1,3 +1,16 @@
+budgie-indicator-applet (0.5-0ubuntu1) bionic; urgency=medium
+
+  * New upstream release
+    - Support budgie vertical panels
+  * Packaging changes
+    - Drop all patches since new release includes these in source
+    - Debian/Copyright - 2018 year change
+    - Debian/{Control/Compat} debhelper v11
+    - Debian/Control Standards-Version bump (no changes required)
+    - Debian/Copyright - Ensure debian/* files are GPL-2+ licensed
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 17 Feb 2018 21:35:45 +0000
+
 budgie-indicator-applet (0.4-0ubuntu2) artful; urgency=medium
 
   * Bug-fix release
@@ -6,7 +19,7 @@ budgie-indicator-applet (0.4-0ubuntu2) artful; urgency=medium
       the panel
       Force resizing of GIcons to appindicator spec of 22px (LP: #1641457)
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Wed, 06 Sep 2017 22:28:32 +0100
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 17 Sep 2017 23:45:14 -0500
 
 budgie-indicator-applet (0.4-0ubuntu1) artful; urgency=medium
 
