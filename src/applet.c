@@ -16,10 +16,20 @@
 
 #define _GNU_SOURCE
 
+#define <config.h>
+
 #include "applet.h"
 #include <assert.h>
 #include <budgie-desktop/plugin.h>
 #include <gobject/gobject.h>
+
+#if HAVE_UBUNTU_INDICATOR && HAVE_UBUNTU_INDICATOR_NG
+#include <libido/libido.h>
+#endif
+
+#if HAVE_AYATANA_INDICATOR && HAVE_AYATANA_INDICATOR_NG
+#include <libayatana-ido/libayatana-ido.h>
+#endif
 
 void load_modules(GtkWidget *menubar, gint *indicators_loaded);
 void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_loaded);
@@ -170,9 +180,9 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 {
         GtkCssProvider *css_provider = NULL;
 
-//#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
-//        ido_init();
-//#endif
+#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
+        ido_init();
+#endif
 
         menubar = gtk_menu_bar_new();
         self->menubar = menubar;
@@ -212,16 +222,9 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 
         gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), INDICATOR_ICONS_DIR);
 
-        /*
-         * leave this here - this is the entry point for indicators such as
-         * indicator-messages. Currently these indicators don't display their
-         * menu contents correctly - e.g. missing thunderbird from indicator-messages
-         * drop-down.
-         */
-
-//#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
-//      load_indicators_from_indicator_files (menubar, &indicators_loaded);
-//#endif
+#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
+        load_indicators_from_indicator_files (menubar, &indicators_loaded);
+#endif
 
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));

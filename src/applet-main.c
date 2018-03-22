@@ -28,19 +28,17 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <budgie-desktop/plugin.h>
 
-//#if HAVE_UBUNTU_INDICATOR && HAVE_UBUNTU_INDICATOR_NG
-//#include <libindicator/indicator-ng.h>
-//#include <libido/libido.h>
-//
-//#define INDICATOR_SERVICE_DIR "/usr/share/unity/indicators"
-//#endif
+#if HAVE_UBUNTU_INDICATOR && HAVE_UBUNTU_INDICATOR_NG
+#include <libindicator/indicator-ng.h>
 
-//#if HAVE_AYATANA_INDICATOR && HAVE_AYATANA_INDICATOR_NG
-//#include <libayatana-indicator/indicator-ng.h>
-//#include <libayatana-ido/libayatana-ido.h>
-//
-//#define INDICATOR_SERVICE_DIR "/usr/share/ayatana/indicators"
-//#endif
+#define INDICATOR_SERVICE_DIR "/usr/share/unity/indicators"
+#endif
+
+#if HAVE_AYATANA_INDICATOR && HAVE_AYATANA_INDICATOR_NG
+#include <libayatana-indicator/indicator-ng.h>
+
+#define INDICATOR_SERVICE_DIR "/usr/share/ayatana/indicators"
+#endif
 
 #if HAVE_UBUNTU_INDICATOR
 
@@ -566,8 +564,15 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         indicator_object_set_environment(io, (const GStrv)indicator_env);
         g_debug("zzz load_indicator %s", name);
         /* Attach the 'name' to the object */
-        int pos = name2order(name);
 
+#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
+        int pos = 5000 - indicator_object_get_position(io);
+        if (pos > 5000) {
+                pos = name2order(name);
+        }
+#else
+        int pos = name2order(name);
+#endif
         g_object_set_data(G_OBJECT(io), IO_DATA_ORDER_NUMBER, GINT_TO_POINTER(pos));
 
         /* Connect to its signals */
@@ -604,7 +609,6 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         g_list_free(entries);
 }
 
-/*
 #if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
 void
 load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loaded)
@@ -653,8 +657,7 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
 
         g_dir_close (dir);
 }
-*/
-//#endif  /* HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG */
+#endif  /* HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG */
 
 static gboolean load_module(const gchar *name, GtkWidget *menubar)
 {
