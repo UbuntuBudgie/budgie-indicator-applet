@@ -170,6 +170,10 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 {
         GtkCssProvider *css_provider = NULL;
 
+//#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
+//        ido_init();
+//#endif
+
         menubar = gtk_menu_bar_new();
         self->menubar = menubar;
 
@@ -213,8 +217,11 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
          * indicator-messages. Currently these indicators don't display their
          * menu contents correctly - e.g. missing thunderbird from indicator-messages
          * drop-down.
-         * load_indicators_from_indicator_files (menubar, &indicators_loaded);
          */
+
+//#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
+//      load_indicators_from_indicator_files (menubar, &indicators_loaded);
+//#endif
 
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));
