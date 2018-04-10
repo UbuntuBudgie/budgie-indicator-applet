@@ -1,42 +1,41 @@
-budgie-indicator-applet (0.5-0ubuntu1) bionic; urgency=medium
+budgie-indicator-applet (0.6-1) UNRELEASED; urgency=medium
 
+  [David Mohammed]
   * New upstream release
     - Support budgie vertical panels
-  * Packaging changes
-    - Drop all patches since new release includes these in source
-    - Debian/Copyright - 2018 year change
-    - Debian/{Control/Compat} debhelper v11
-    - Debian/Control Standards-Version bump (no changes required)
-    - Debian/Copyright - Ensure debian/* files are GPL-2+ licensed
-
- -- David Mohammed <fossfreedom@ubuntu.com>  Sat, 17 Feb 2018 21:35:45 +0000
-
-budgie-indicator-applet (0.4-0ubuntu2) artful; urgency=medium
-
-  * Bug-fix release
-    - 0001-Style-and-icon-size-fixes-3.patch
-      Ensure the applet is styled correctly to blend into
+    - Ensure the applet is styled correctly to blend into
       the panel
       Force resizing of GIcons to appindicator spec of 22px (LP: #1641457)
-
- -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 17 Sep 2017 23:45:14 -0500
-
-budgie-indicator-applet (0.4-0ubuntu1) artful; urgency=medium
-
-  * New release (LP: #1711928)
     - Removing self theming since this is now handled by
-      budgie-desktop v10.4
+      budgie-desktop v10.4 (LP: #1711928)
     - fix startup warning
     - add applet blacklist
-  * Packaging Changes
-    - debian/copyright: year change and repo name change
+  * Packaging changes
+    - Debian/copyright - year change and repo name change
+    - Debian/copyright - Ensure debian/* files are GPL-2+ licensed
     - debian/copyright: http --> https
-    - debian/control: update standards version to 4.0.1 and
-      confirmed that packaging meets this standard
+    - Debian/{control/compat} debhelper v11
+    - Debian/control Standards-Version bump (no changes required)
     - debian/control: build-dependency restriction of >= 10.4 for
       budgie-core-dev added due to theming change
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 20 Aug 2017 12:18:55 +0100
+  [Mike Gabriel <mike.gabriel@das-netzwerkteam.de>]
+  * Add the following changes:
+    - Make the package build against Ubuntu Indicators and Ayatana
+      Indicators alike.
+    - Re-enable (and fix)
+      Indicators NG file support (loading indicators from service
+      files.
+  * debian/control:
+    - Add B-Ds: libayatana-indicator3-dev, libayatana-ido3-0.4-dev.
+      to support building against Ayatana Indicators on Debian. Leaving
+      Ubuntu Indicators B-Ds in the control file, too, so that on Ubuntu
+      we can build (see debian/rules) against Ubuntu Indicators.
+  * debian/rules:
+    - Select the Indicator implementation to build against based on the
+      distribution the package is built for (Debian vs. Ubuntu).
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Mon, 10 Apr 2018 20:18:55 +0100
 
 budgie-indicator-applet (0.3-1) unstable; urgency=medium
 
