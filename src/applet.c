@@ -16,7 +16,7 @@
 
 #define _GNU_SOURCE
 
-#define <config.h>
+#include <config.h>
 
 #include "applet.h"
 #include <assert.h>
@@ -183,6 +183,8 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 #if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
         ido_init();
 #endif
+
+        gint indicators_loaded = 0;
 
         menubar = gtk_menu_bar_new();
         self->menubar = menubar;
