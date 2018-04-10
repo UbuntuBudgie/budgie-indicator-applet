@@ -1,3 +1,17 @@
+if WITH_AYATANA_INDICATOR
+INDICATOR_CFLAGS = $(AYATANA_INDICATOR_CFLAGS)          \
+                   $(AYATANA_INDICATOR_NG_CFLAGS)
+INDICATOR_LIBS   = $(AYATANA_INDICATOR_LIBS)            \
+                   $(AYATANA_INDICATOR_NG_LIBS)
+endif
+
+if WITH_UBUNTU_INDICATOR
+INDICATOR_CFLAGS = $(UBUNTU_INDICATOR_CFLAGS)           \
+                   $(UBUNTU_INDICATOR_NG_CFLAGS)
+INDICATOR_LIBS   = $(UBUNTU_INDICATOR_LIBS)             \
+                   $(UBUNTU_INDICATOR_NG_LIBS)
+endif
+
 include $(top_srcdir)/common.mk
 
 plugindir = $(libdir)/budgie-desktop/plugins

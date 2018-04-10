@@ -26,12 +26,51 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-//#include <libindicator/indicator-ng.h>
 #include <budgie-desktop/plugin.h>
+
+#if HAVE_UBUNTU_INDICATOR && HAVE_UBUNTU_INDICATOR_NG
+#include <libindicator/indicator-ng.h>
+
+#define INDICATOR_SERVICE_DIR "/usr/share/unity/indicators"
+#endif
+
+#if HAVE_AYATANA_INDICATOR && HAVE_AYATANA_INDICATOR_NG
+#include <libayatana-indicator/indicator-ng.h>
+
+#define INDICATOR_SERVICE_DIR "/usr/share/ayatana/indicators"
+#endif
+
+#if HAVE_UBUNTU_INDICATOR
+
+#define INDICATOR_SERVICE_APPMENU      "libappmenu.so"
+#define INDICATOR_SERVICE_ME           "libme.so"
+#define INDICATOR_SERVICE_DATETIME     "libdatetime.so"
+
+#define INDICATOR_SERVICE_APPMENU_NG   "com.canonical.indicator.appmenu"
+#define INDICATOR_SERVICE_ME_NG        "com.canonical.indicator.me"
+#define INDICATOR_SERVICE_DATETIME_NG  "com.canonical.indicator.datetime"
+
 #include <libindicator/indicator-object.h>
 
 static gchar *indicator_order[] = { "libapplication.so", "libmessaging.so", "libsoundmenu.so",
                                     "libdatetime.so",    "libsession.so",   NULL };
+#endif
+
+#if HAVE_AYATANA_INDICATOR
+
+#define INDICATOR_SERVICE_APPMENU      "libayatana-appmenu.so"
+#define INDICATOR_SERVICE_ME           "libayatana-me.so"
+#define INDICATOR_SERVICE_DATETIME     "libayatana-datetime.so"
+
+#define INDICATOR_SERVICE_APPMENU_NG   "org.ayatana.indicator.appmenu"
+#define INDICATOR_SERVICE_ME_NG        "org.ayatana.indicator.me"
+#define INDICATOR_SERVICE_DATETIME_NG  "org.ayatana.indicator.datetime"
+
+#include <libayatana-indicator/indicator-object.h>
+
+static gchar *indicator_order[] = { "libayatana-application.so", "libayatana-messaging.so", "libayatana-soundmenu.so",
+                                    "libayatana-datetime.so",    "libayatana-session.so",   NULL };
+#endif
 
 static gchar *blacklist_applets[] = { "nm-applet", 0 };
 
@@ -525,8 +564,15 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         indicator_object_set_environment(io, (const GStrv)indicator_env);
         g_debug("zzz load_indicator %s", name);
         /* Attach the 'name' to the object */
-        int pos = name2order(name);
 
+#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
+        int pos = 5000 - indicator_object_get_position(io);
+        if (pos > 5000) {
+                pos = name2order(name);
+        }
+#else
+        int pos = name2order(name);
+#endif
         g_object_set_data(G_OBJECT(io), IO_DATA_ORDER_NUMBER, GINT_TO_POINTER(pos));
 
         /* Connect to its signals */
@@ -563,9 +609,7 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
         g_list_free(entries);
 }
 
-/*
-#define INDICATOR_SERVICE_DIR "/usr/share/unity/indicators"
-
+#if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
 void
 load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loaded)
 {
@@ -591,24 +635,15 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
                 indicator = indicator_ng_new_for_profile (filename, "desktop", &error);
                 g_free (filename);
 
-*#ifdef INDICATOR_APPLET_APPMENU
-                if (g_strcmp0(name, "com.canonical.indicator.appmenu")) {
+                if (!g_strcmp0(name, INDICATOR_SERVICE_APPMENU_NG)) {
                         continue;
                 }
-#else
-                if (!g_strcmp0(name, "com.canonical.indicator.appmenu")) {
+                if (!g_strcmp0(name, INDICATOR_SERVICE_ME_NG)) {
                         continue;
                 }
-#endif
-#ifdef INDICATOR_APPLET
-                if (!g_strcmp0(name, "com.canonical.indicator.me")) {
+                if (!g_strcmp0(name,  INDICATOR_SERVICE_DATETIME_NG)) {
                         continue;
                 }
-                if (!g_strcmp0(name, "com.canonical.indicator.datetime")) {
-                        continue;
-                }
-#endif
-*
                 if (indicator) {
                         load_indicator(menubar, INDICATOR_OBJECT (indicator), name);
                         count++;
@@ -622,7 +657,7 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
 
         g_dir_close (dir);
 }
-*/
+#endif  /* HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG */
 
 static gboolean load_module(const gchar *name, GtkWidget *menubar)
 {
@@ -653,13 +688,13 @@ void load_modules(GtkWidget *menubar, gint *indicators_loaded)
                 const gchar *name;
                 gint count = 0;
                 while ((name = g_dir_read_name(dir)) != NULL) {
-                        if (!g_strcmp0(name, "libappmenu.so")) {
+                        if (!g_strcmp0(name, INDICATOR_SERVICE_APPMENU)) {
                                 continue;
                         }
-                        if (!g_strcmp0(name, "libme.so")) {
+                        if (!g_strcmp0(name, INDICATOR_SERVICE_ME)) {
                                 continue;
                         }
-                        if (!g_strcmp0(name, "libdatetime.so")) {
+                        if (!g_strcmp0(name, INDICATOR_SERVICE_DATETIME)) {
                                 continue;
                         }
                         g_debug("zzz a: %s", name);
