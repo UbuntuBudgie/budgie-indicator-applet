@@ -7,11 +7,17 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
+ifeq ($(shell dpkg-vendor --is Ubuntu && echo yes),yes)
+INDICATOR_IMPLEMENTATION=--with-ubuntu-indicators=yes
+else
+INDICATOR_IMPLEMENTATION=--with-ayatana-indicators=yes
+endif
+
 %:
 	dh $@
 	
 override_dh_auto_configure:
-	dh_auto_configure -- --prefix=/usr --libdir=/usr/lib
+	dh_auto_configure -- --prefix=/usr --libdir=/usr/lib $(INDICATOR_IMPLEMENTATION)
 
 override_dh_auto_install:
 	dh_auto_install
