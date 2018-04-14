@@ -11,13 +11,14 @@ budgie-indicator-applet (0.6-1) UNRELEASED; urgency=medium
     - fix startup warning
     - add applet blacklist
   * Packaging changes
-    - Debian/copyright - year change and repo name change
-    - Debian/copyright - Ensure debian/* files are GPL-2+ licensed
+    - debian/copyright - year change and repo name change
+    - debian/copyright - Ensure debian/* files are GPL-2+ licensed
     - debian/copyright: http --> https
-    - Debian/{control/compat} debhelper v11
-    - Debian/control Standards-Version bump (no changes required)
+    - debian/{control/compat} debhelper v11
+    - debian/control Standards-Version bump (no changes required)
     - debian/control: build-dependency restriction of >= 10.4 for
       budgie-core-dev added due to theming change
+    - debian/control: remove deprecated build dependencies
 
   [Mike Gabriel <mike.gabriel@das-netzwerkteam.de>]
   * Add the following changes:
