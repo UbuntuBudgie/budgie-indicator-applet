@@ -2,7 +2,7 @@
 A small wrapper utility to load indicators and put them as menu items
 into the mate-panel using it's applet interface.
 
-Copyright 2009-2010 Canonical Ltd., 2016-2017 David Mohammed
+Copyright 2009-2010 Canonical Ltd., 2016-2018 David Mohammed
 
 Authors:
     Ted Gould <ted@canonical.com>
