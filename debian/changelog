@@ -22,7 +22,7 @@ budgie-indicator-applet (0.6-1) UNRELEASED; urgency=medium
   [Mike Gabriel <mike.gabriel@das-netzwerkteam.de>]
   * Add the following changes:
     - Make the package build against Ubuntu Indicators and Ayatana
-      Indicators alike.
+      Indicators alike (Closes: #893707)
     - Re-enable (and fix)
       Indicators NG file support (loading indicators from service
       files.
