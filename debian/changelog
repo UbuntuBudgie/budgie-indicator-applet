@@ -19,6 +19,7 @@ budgie-indicator-applet (0.6-1) UNRELEASED; urgency=medium
     - debian/control: build-dependency restriction of >= 10.4 for
       budgie-core-dev added due to theming change
     - debian/control: remove deprecated build dependencies
+    - update metadata to resolve check-all-the-things warnings and errors
 
   [Mike Gabriel <mike.gabriel@das-netzwerkteam.de>]
   * Add the following changes:
@@ -36,7 +37,7 @@ budgie-indicator-applet (0.6-1) UNRELEASED; urgency=medium
     - Select the Indicator implementation to build against based on the
       distribution the package is built for (Debian vs. Ubuntu).
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Mon, 10 Apr 2018 20:18:55 +0100
+ -- David Mohammed <fossfreedom@ubuntu.com>  Tue, 10 Apr 2018 20:18:55 +0100
 
 budgie-indicator-applet (0.3-1) unstable; urgency=medium
 
