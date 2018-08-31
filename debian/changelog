@@ -1,3 +1,17 @@
+budgie-indicator-applet (0.6-2) unstable; urgency=medium
+
+  * Packaging Changes
+    - control: bump Standards-Version
+      changes - update rules to make compilation verbose
+    - control: build depends changed to
+      libayatana-ido3-dev (Closes: #907377)
+    - control: add ayatana-indicator-application to depends to ensure
+      indicators service is available to service running indicators
+    - control: add ayatana introspection equivalent package for
+      indicators that have been converted
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Fri, 31 Aug 2018 11:00:05 +0100
+
 budgie-indicator-applet (0.6-1) unstable; urgency=medium
 
   [David Mohammed]

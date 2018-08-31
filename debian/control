@@ -10,8 +10,8 @@ Build-Depends: debhelper (>= 11),
                libayatana-indicator3-dev,
                libpeas-dev,
                budgie-core-dev (>= 10.4),
-               libayatana-ido3-0.4-dev
-Standards-Version: 4.1.4
+               libayatana-ido3-dev
+Standards-Version: 4.2.1
 Homepage: https://github.com/UbuntuBudgie/budgie-indicator-applet
 Vcs-Browser: https://github.com/UbuntuBudgie/budgie-indicator-applet/tree/debian
 Vcs-Git: https://github.com/UbuntuBudgie/budgie-indicator-applet -b debian
@@ -19,8 +19,10 @@ Vcs-Git: https://github.com/UbuntuBudgie/budgie-indicator-applet -b debian
 Package: budgie-indicator-applet
 Architecture: any
 Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Recommends: gir1.2-appindicator3-0.1
+         ${shlibs:Depends},
+         ayatana-indicator-application
+Recommends: gir1.2-appindicator3-0.1,
+ gir1.2-ayatanaappindicator3-0.1
 Description: Application Indicator for the budgie-desktop
  Package that installs an Application Indicator applet for the
  budgie-desktop. The applet is intended to be used instead of the
