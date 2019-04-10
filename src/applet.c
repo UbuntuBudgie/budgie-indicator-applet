@@ -174,6 +174,22 @@ static gboolean delay_load_indicators(gpointer data)
 }
 
 /**
+* We only support left click events; prevent confusion for right
+* click then left click fandango
+**/
+static gboolean
+menubar_press (GtkWidget * widget,
+                    GdkEventButton *event,
+                    gpointer data G_GNUC_UNUSED)
+{
+	if (event->button != 1) {
+		g_signal_stop_emission_by_name(widget, "button-press-event");
+	}
+
+	return FALSE;
+}
+
+/**
  * Initialisation of basic UI layout and such
  */
 static void appindicator_applet_init(AppIndicatorApplet *self)
@@ -188,6 +204,8 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
 
         menubar = gtk_menu_bar_new();
         self->menubar = menubar;
+
+        g_signal_connect(menubar, "button-press-event", G_CALLBACK(menubar_press), NULL);
 
         css_provider = gtk_css_provider_new();
 #if GTK_CHECK_VERSION(3, 20, 0)
