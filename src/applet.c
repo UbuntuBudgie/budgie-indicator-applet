@@ -31,8 +31,9 @@
 #include <libayatana-ido/libayatana-ido.h>
 #endif
 
-void load_modules(GtkWidget *menubar, gint *indicators_loaded);
-void load_indicators_from_indicator_files(GtkWidget *menubar, gint *indicators_loaded);
+void load_modules(AppIndicatorApplet *applet, GtkWidget *menubar, gint *indicators_loaded);
+void load_indicators_from_indicator_files(AppIndicatorApplet *applet, GtkWidget *menubar, gint *indicators_loaded);
+void update_panel_size(AppIndicatorApplet *applet, int panel_size, int icon_size, int small_icon_size);
 
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
@@ -113,6 +114,16 @@ static void native_applet_real_panel_position_changed(BudgieApplet *base,
         }
 }
 
+static void native_applet_real_panel_size_changed(BudgieApplet *base,
+                                                      int panel_size,
+                                                      int icon_size,
+                                                      int small_icon_size)
+{
+        AppIndicatorApplet *self;
+        self = (AppIndicatorApplet *)base;
+        update_panel_size(self, panel_size, icon_size, small_icon_size);
+}
+
 G_DEFINE_DYNAMIC_TYPE_EXTENDED(AppIndicatorApplet, appindicator_applet, BUDGIE_TYPE_APPLET, 0, )
 
 extern GtkCssProvider *css_provider;
@@ -142,6 +153,9 @@ static void appindicator_applet_class_init(AppIndicatorAppletClass *klazz)
         ((BudgieAppletClass *)klazz)->panel_position_changed =
             (void (*)(BudgieApplet *,
                       BudgiePanelPosition))native_applet_real_panel_position_changed;
+        ((BudgieAppletClass *)klazz)->panel_size_changed =
+            (void (*)(BudgieApplet *,
+                      int, int, int))native_applet_real_panel_size_changed;
 }
 
 /**
@@ -154,12 +168,12 @@ static void appindicator_applet_class_finalize(__budgie_unused__ AppIndicatorApp
 static GtkWidget *eventbox = NULL;
 static GtkWidget *menubar = NULL;
 
-static gboolean delay_load_indicators(gpointer data)
+static gboolean delay_load_indicators(AppIndicatorApplet *applet)
 {
         gint indicators_loaded = 0;
 
         gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar), packdirection);
-        load_modules(menubar, &indicators_loaded);
+        load_modules(applet, menubar, &indicators_loaded);
 
         if (indicators_loaded == 0) {
                 /* A label to allow for click through */
@@ -243,13 +257,13 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
         gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), INDICATOR_ICONS_DIR);
 
 #if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
-        load_indicators_from_indicator_files (menubar, &indicators_loaded);
+        load_indicators_from_indicator_files (self, menubar, &indicators_loaded);
 #endif
 
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));
 
-        g_timeout_add_seconds(1, delay_load_indicators, NULL);
+        g_timeout_add_seconds(1, delay_load_indicators, self);
 }
 
 void appindicator_applet_init_gtype(GTypeModule *module)

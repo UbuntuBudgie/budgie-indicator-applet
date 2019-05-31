@@ -50,6 +50,6 @@ Enhancements
  
      GTK_DEBUG=interactive budgie-panel --replace
      
- Use the following to print out g_debug messages i.e. use "zzz" in the g_debug to show in the grep filter
+ Use the following to print out g_debug messages
  
-     G_MESSAGES_DEBUG=all budgie-panel --replace | grep "zzz"
+     G_MESSAGES_DEBUG=Indicator-Applet-DEBUG budgie-panel --replace

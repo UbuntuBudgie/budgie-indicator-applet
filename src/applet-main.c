@@ -75,12 +75,63 @@ static gchar *indicator_order[] = { "libayatana-application.so", "libayatana-mes
 static gchar *blacklist_applets[] = { "nm-applet", 0 };
 
 BudgiePanelPosition orient = BUDGIE_PANEL_POSITION_NONE;
+static guint current_icon_size;
+static guint panel_size;
+static guint icon_size;
+static guint small_icon_size;
+
 GtkPackDirection packdirection = GTK_ORIENTATION_HORIZONTAL;
 
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
 
 #define IO_DATA_ORDER_NUMBER "indicator-order-number"
+
+#define PANEL_PADDING 6
+
+void calc_default_icon_size() {
+        current_icon_size = icon_size - 10;
+
+        if ((panel_size - PANEL_PADDING) <= icon_size) {
+                current_icon_size = small_icon_size - 10;
+        }
+
+        if (current_icon_size <= 0) {
+                current_icon_size = 22; //appindicator spec size
+                return;
+        }
+}
+static gboolean
+entry_resized (AppIndicatorApplet *applet, gpointer data)
+{
+        //IndicatorObject *io =
+        //    INDICATOR_OBJECT(g_object_get_data(G_OBJECT(data), MENU_DATA_INDICATOR_OBJECT));
+        //g_assert(io != NULL);
+	IndicatorObject *io = (IndicatorObject *)data;
+
+	calc_default_icon_size();
+
+        g_debug("icon size %d", current_icon_size);
+	/* Work on the entries */
+        g_debug("get entries before");
+        if (io == NULL) return FALSE;
+	GList * entries = indicator_object_get_entries(io);
+        g_debug("get entries after");
+        if (entries == NULL) return FALSE;
+	GList * entry = NULL;
+
+	for (entry = entries; entry != NULL; entry = g_list_next(entry)) {
+		IndicatorObjectEntry * entrydata = (IndicatorObjectEntry *)entry->data;
+		if (entrydata->image != NULL) {
+			/* Resize to fit panel */
+                        g_debug("before set");
+			gtk_image_set_pixel_size (entrydata->image, current_icon_size);
+                        g_debug("after set");
+		}
+	}
+
+	return FALSE;
+}
 
 static void update_accessible_desc(IndicatorObjectEntry *entry, GtkWidget *menuitem);
 
@@ -297,7 +348,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
 
         if (entry->image != NULL) {
                 g_debug("zzz have an image");
-                gtk_image_set_pixel_size(entry->image, 22);
+                gtk_image_set_pixel_size(entry->image, current_icon_size);
                 gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(entry->image), FALSE, FALSE, 1);
                 if (gtk_widget_get_visible(GTK_WIDGET(entry->image))) {
                         g_debug("zzz and is visible");
@@ -558,7 +609,10 @@ static void update_accessible_desc(IndicatorObjectEntry *entry, GtkWidget *menui
         return;
 }
 
-static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar *name)
+static void load_indicator(AppIndicatorApplet *applet,
+                           GtkWidget *menubar,
+                           IndicatorObject *io,
+                           const gchar *name)
 {
         /* Set the environment it's in */
         indicator_object_set_environment(io, (const GStrv)indicator_env);
@@ -597,6 +651,13 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
                          G_CALLBACK(accessible_desc_update),
                          menubar);
 
+        //g_signal_connect(G_OBJECT(applet),
+        //                        "panel-size-changed",
+        //                        G_CALLBACK(entry_resized),
+        //                       io);
+
+        g_signal_connect_object(G_OBJECT(applet), "panel-size-changed", G_CALLBACK(entry_resized), G_OBJECT(io), 0);
+
         /* Work on the entries */
         GList *entries = indicator_object_get_entries(io);
         GList *entry = NULL;
@@ -611,7 +672,7 @@ static void load_indicator(GtkWidget *menubar, IndicatorObject *io, const gchar 
 
 #if HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG
 void
-load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loaded)
+load_indicators_from_indicator_files (AppIndicatorApplet *applet, GtkWidget *menubar, gint *indicators_loaded)
 {
         GDir *dir;
         const gchar *name;
@@ -645,7 +706,7 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
                         continue;
                 }
                 if (indicator) {
-                        load_indicator(menubar, INDICATOR_OBJECT (indicator), name);
+                        load_indicator(applet, menubar, INDICATOR_OBJECT (indicator), name);
                         count++;
                 }else{
                         g_warning ("unable to load '%s': %s", name, error->message);
@@ -659,7 +720,7 @@ load_indicators_from_indicator_files (GtkWidget *menubar, gint *indicators_loade
 }
 #endif  /* HAVE_AYATANA_INDICATOR_NG || HAVE_UBUNTU_INDICATOR_NG */
 
-static gboolean load_module(const gchar *name, GtkWidget *menubar)
+static gboolean load_module(const gchar *name, AppIndicatorApplet *applet, GtkWidget *menubar)
 {
         g_debug("Looking at Module: %s", name);
         g_return_val_if_fail(name != NULL, FALSE);
@@ -675,12 +736,23 @@ static gboolean load_module(const gchar *name, GtkWidget *menubar)
         IndicatorObject *io = indicator_object_new_from_file(fullpath);
         g_free(fullpath);
 
-        load_indicator(menubar, io, name);
+        load_indicator(applet, menubar, io, name);
 
         return TRUE;
 }
 
-void load_modules(GtkWidget *menubar, gint *indicators_loaded)
+void update_panel_size(AppIndicatorApplet *applet, int u_panel_size, int u_icon_size, int u_small_icon_size){
+        g_debug("Panel size %d", u_panel_size);
+        g_debug("icon size %d", u_icon_size);
+        g_debug("small size %d", u_small_icon_size);
+        panel_size = u_panel_size;
+        icon_size = u_icon_size;
+        small_icon_size = u_small_icon_size;
+
+        calc_default_icon_size();
+}
+
+void load_modules(AppIndicatorApplet *applet, GtkWidget *menubar, gint *indicators_loaded)
 {
         if (g_file_test(INDICATOR_DIR, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
                 GDir *dir = g_dir_open(INDICATOR_DIR, 0, NULL);
@@ -698,7 +770,7 @@ void load_modules(GtkWidget *menubar, gint *indicators_loaded)
                                 continue;
                         }
                         g_debug("zzz a: %s", name);
-                        if (load_module(name, menubar)) {
+                        if (load_module(name, applet, menubar)) {
                                 count++;
                         }
                 }
