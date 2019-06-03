@@ -87,36 +87,26 @@ GtkPackDirection packdirection = GTK_ORIENTATION_HORIZONTAL;
 
 #define IO_DATA_ORDER_NUMBER "indicator-order-number"
 
-#define PANEL_PADDING 6
-
 void calc_default_icon_size() {
-        current_icon_size = icon_size - 10;
+        int small_panel_size = 37;
+        current_icon_size = 22; //appindicator spec size
 
-        if ((panel_size - PANEL_PADDING) <= icon_size) {
-                current_icon_size = small_icon_size - 10;
-        }
+        if (panel_size < small_panel_size ) {
+                current_icon_size = current_icon_size + (panel_size - current_icon_size - 15);
 
-        if (current_icon_size <= 0) {
-                current_icon_size = 22; //appindicator spec size
-                return;
+                if (current_icon_size < 16) current_icon_size = 16;
         }
 }
 static gboolean
-entry_resized (AppIndicatorApplet *applet, gpointer data)
+entry_resized (AppIndicatorApplet *applet, int panel_size, int icon_size, int small_icon_size, gpointer data)
 {
-        //IndicatorObject *io =
-        //    INDICATOR_OBJECT(g_object_get_data(G_OBJECT(data), MENU_DATA_INDICATOR_OBJECT));
-        //g_assert(io != NULL);
 	IndicatorObject *io = (IndicatorObject *)data;
 
 	calc_default_icon_size();
 
-        g_debug("icon size %d", current_icon_size);
 	/* Work on the entries */
-        g_debug("get entries before");
         if (io == NULL) return FALSE;
 	GList * entries = indicator_object_get_entries(io);
-        g_debug("get entries after");
         if (entries == NULL) return FALSE;
 	GList * entry = NULL;
 
@@ -124,9 +114,7 @@ entry_resized (AppIndicatorApplet *applet, gpointer data)
 		IndicatorObjectEntry * entrydata = (IndicatorObjectEntry *)entry->data;
 		if (entrydata->image != NULL) {
 			/* Resize to fit panel */
-                        g_debug("before set");
 			gtk_image_set_pixel_size (entrydata->image, current_icon_size);
-                        g_debug("after set");
 		}
 	}
 
@@ -651,12 +639,10 @@ static void load_indicator(AppIndicatorApplet *applet,
                          G_CALLBACK(accessible_desc_update),
                          menubar);
 
-        //g_signal_connect(G_OBJECT(applet),
-        //                        "panel-size-changed",
-        //                        G_CALLBACK(entry_resized),
-        //                       io);
-
-        g_signal_connect_object(G_OBJECT(applet), "panel-size-changed", G_CALLBACK(entry_resized), G_OBJECT(io), 0);
+        g_signal_connect(G_OBJECT(applet),
+                         "panel-size-changed",
+                         G_CALLBACK(entry_resized),
+                         G_OBJECT(io));
 
         /* Work on the entries */
         GList *entries = indicator_object_get_entries(io);
@@ -664,6 +650,7 @@ static void load_indicator(AppIndicatorApplet *applet,
 
         for (entry = entries; entry != NULL; entry = g_list_next(entry)) {
                 IndicatorObjectEntry *entrydata = (IndicatorObjectEntry *)entry->data;
+
                 entry_added(io, entrydata, menubar);
         }
 
