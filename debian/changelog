@@ -1,15 +1,17 @@
-budgie-indicator-applet (0.6.1-1) UNRELEASED; urgency=medium
+budgie-indicator-applet (0.6.1-1) unstable; urgency=medium
 
   * New Upstream release
     - Change appindicator icon when panel size changes
     - Right click on appindicator disabled to be consistent with budgie
   * Packaging Changes
     - control: bump Standards-Version
+    - control & compat: update to debhelper 12
     - control: change B-D to use ubuntu equivs
     - copyright: update copyright years to 2019
     - rules: Use derives to ensure can build on all Ubuntu derivatives
+    - watch: update changed repo name
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Tue, 04 Jun 2019 20:23:07 +0100
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 14 Jul 2019 09:34:21 +0100
 
 budgie-indicator-applet (0.6-2) unstable; urgency=medium
 
