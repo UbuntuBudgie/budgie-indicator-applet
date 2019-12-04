@@ -1,7 +1,2 @@
-version=3
-opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/budgie-indicator-applet-$1\.tar\.gz/,\
-pgpsigurlmangle=s/github.com/raw.githubusercontent.com/;\
-s/archive/debian/;\
-s/([^\/]+)\.tar\.gz/$1\.tar\.gz/;\
-s/$/.asc/ \
- https://github.com/UbuntuBudgie/budgie-indicator-applet/tags .*/v?(\d\S*)\.tar\.gz
+version=4
+opts=pgpsigurlmangle=s/$/.asc/ https://github.com/ubuntubudgie/budgie-indicator-applet/releases .*/budgie-indicator-applet-([0-9.]+)\.tar\.xz

@@ -1,3 +1,17 @@
+budgie-indicator-applet (0.6.2-1) unstable; urgency=medium
+
+  * New Upstream release
+    - blacklist Google Hangouts extension icons now that appindicator
+      support has been withdrawn from Chrome/Chromium
+  * Packaging Changes
+    - watch - update for new location for tarball and signed key
+    - upstream - update to new signing key
+    - remove deprecated compat
+    - control - add build-depends debhelper-compat (= 12),
+    - control - bump Standards-Version - no changes required
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Wed, 04 Dec 2019 22:25:28 +0000
+
 budgie-indicator-applet (0.6.1-1) unstable; urgency=medium
 
   * New Upstream release
