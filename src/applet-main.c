@@ -72,7 +72,7 @@ static gchar *indicator_order[] = { "libayatana-application.so", "libayatana-mes
                                     "libayatana-datetime.so",    "libayatana-session.so",   NULL };
 #endif
 
-static gchar *blacklist_applets[] = { "nm-applet", 0 };
+static gchar *blacklist_applets[] = { "nm-applet", "chrome_status_icon_1", "chrome_status_icon_2",  0 };
 
 BudgiePanelPosition orient = BUDGIE_PANEL_POSITION_NONE;
 static guint current_icon_size;
