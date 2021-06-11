@@ -97,6 +97,28 @@ void calc_default_icon_size() {
                 if (current_icon_size < 16) current_icon_size = 16;
         }
 }
+
+static void resize_image(GtkImage *image, __attribute__((unused)) gpointer user_data)
+{
+        GdkPixbuf *pixbuf;
+        GdkPixbuf *scaled_pixbuf;
+        g_debug("zzz resize_image");
+
+        pixbuf = gtk_image_get_pixbuf (image);
+
+        if (pixbuf == NULL) return;
+
+        if (gdk_pixbuf_get_height(pixbuf) != (current_icon_size-2)) {
+                scaled_pixbuf = gdk_pixbuf_scale_simple( pixbuf,
+                        (int)((double)(current_icon_size-2) / gdk_pixbuf_get_height(pixbuf) * gdk_pixbuf_get_width(pixbuf)),
+                        (current_icon_size-2), GDK_INTERP_HYPER
+                        );
+
+                gtk_image_set_from_pixbuf (image, scaled_pixbuf);
+        }
+
+}
+
 static gboolean
 entry_resized (AppIndicatorApplet *applet, int panel_size, int icon_size, int small_icon_size, gpointer data)
 {
@@ -114,6 +136,10 @@ entry_resized (AppIndicatorApplet *applet, int panel_size, int icon_size, int sm
 		IndicatorObjectEntry * entrydata = (IndicatorObjectEntry *)entry->data;
 		if (entrydata->image != NULL) {
 			/* Resize to fit panel */
+
+                        if (gtk_image_get_storage_type(entrydata->image) == GTK_IMAGE_PIXBUF) {
+                                resize_image(entrydata->image, NULL);
+                        }
 			gtk_image_set_pixel_size (entrydata->image, current_icon_size);
 		}
 	}
@@ -241,6 +267,7 @@ static void sensitive_cb(GObject *obj, __attribute__((unused)) GParamSpec *pspec
         return;
 }
 
+
 static void entry_activated(GtkWidget *widget, gpointer user_data)
 {
         g_return_if_fail(GTK_IS_WIDGET(widget));
@@ -336,6 +363,14 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
 
         if (entry->image != NULL) {
                 g_debug("zzz have an image");
+                if (gtk_image_get_storage_type(entry->image) == GTK_IMAGE_PIXBUF) {
+                        g_debug("zzz have a pixbuf based image");
+                        g_signal_connect(G_OBJECT(entry->image),
+                                 "notify::pixbuf",
+                                 G_CALLBACK(resize_image),
+                                 NULL);
+                        resize_image(entry->image, NULL);
+                }
                 gtk_image_set_pixel_size(entry->image, current_icon_size);
                 gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(entry->image), FALSE, FALSE, 1);
                 if (gtk_widget_get_visible(GTK_WIDGET(entry->image))) {
@@ -487,6 +522,9 @@ static void entry_removed_cb(GtkWidget *widget, gpointer userdata)
                                                      widget);
                 g_signal_handlers_disconnect_by_func(G_OBJECT(entry->image),
                                                      G_CALLBACK(sensitive_cb),
+                                                     widget);
+                g_signal_handlers_disconnect_by_func(G_OBJECT(entry->image),
+                                                     G_CALLBACK(resize_image),
                                                      widget);
         }
 
