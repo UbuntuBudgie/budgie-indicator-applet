@@ -11,7 +11,7 @@ To compile:
     sudo apt install git libtool dpkg-dev intltool libtool libgtk-3-dev libido3-0.1-dev libindicator3-dev libpeas-dev budgie-core-dev
     
     
-    git clone https://github.com/budgie-remix/budgie-indicator-applet
+    git clone https://github.com/ubuntubudgie/budgie-indicator-applet
     cd budgie-indicator-applet
     ./autogen.sh --prefix=/usr --libdir=/usr/lib
     make
