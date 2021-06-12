@@ -74,13 +74,15 @@ static gchar *indicator_order[] = { "libayatana-application.so", "libayatana-mes
 
 static gchar *blacklist_applets[] = { "nm-applet", "chrome_status_icon_1", "chrome_status_icon_2",  0 };
 
-BudgiePanelPosition orient = BUDGIE_PANEL_POSITION_NONE;
-static guint current_icon_size;
-static guint panel_size;
-static guint icon_size;
-static guint small_icon_size;
+void calc_default_icon_size(void);
 
-GtkPackDirection packdirection = GTK_ORIENTATION_HORIZONTAL;
+BudgiePanelPosition orient = BUDGIE_PANEL_POSITION_NONE;
+static int current_icon_size;
+static int panel_size;
+static int icon_size;
+static int small_icon_size;
+
+GtkPackDirection packdirection = (GtkPackDirection)GTK_ORIENTATION_HORIZONTAL;
 
 #define MENU_DATA_INDICATOR_OBJECT "indicator-object"
 #define MENU_DATA_INDICATOR_ENTRY "indicator-entry"
@@ -120,7 +122,7 @@ static void resize_image(GtkImage *image, __attribute__((unused)) gpointer user_
 }
 
 static gboolean
-entry_resized (AppIndicatorApplet *applet, int panel_size, int icon_size, int small_icon_size, gpointer data)
+entry_resized (__attribute__((unused)) AppIndicatorApplet *applet, __attribute__((unused)) int panel_size, __attribute__((unused)) int icon_size, __attribute__((unused)) int small_icon_size, gpointer data)
 {
 	IndicatorObject *io = (IndicatorObject *)data;
 
@@ -275,9 +277,9 @@ static void entry_activated(GtkWidget *widget, gpointer user_data)
         g_return_if_fail(INDICATOR_IS_OBJECT(pio));
         IndicatorObject *io = INDICATOR_OBJECT(pio);
 
-        return indicator_object_entry_activate(io,
-                                               (IndicatorObjectEntry *)user_data,
-                                               gtk_get_current_event_time());
+        indicator_object_entry_activate(io,
+                                        (IndicatorObjectEntry *)user_data,
+                                        gtk_get_current_event_time());
 }
 
 static gboolean entry_scrolled(GtkWidget *menuitem, GdkEventScroll *event,
@@ -766,7 +768,7 @@ static gboolean load_module(const gchar *name, AppIndicatorApplet *applet, GtkWi
         return TRUE;
 }
 
-void update_panel_size(AppIndicatorApplet *applet, int u_panel_size, int u_icon_size, int u_small_icon_size){
+void update_panel_size(__attribute__((unused)) AppIndicatorApplet *applet, int u_panel_size, int u_icon_size, int u_small_icon_size){
         g_debug("Panel size %d", u_panel_size);
         g_debug("icon size %d", u_icon_size);
         g_debug("small size %d", u_small_icon_size);
@@ -825,11 +827,8 @@ void hotkey_filter(char *keystring G_GNUC_UNUSED, gpointer data)
 gboolean menubar_on_draw(GtkWidget *widget, cairo_t *cr, GtkWidget *menubar)
 {
         if (gtk_widget_has_focus(menubar))
-                gtk_paint_focus(gtk_widget_get_style(widget),
+                gtk_render_focus(gtk_widget_get_style_context(widget),
                                 cr,
-                                gtk_widget_get_state(menubar),
-                                widget,
-                                "menubar-applet",
                                 0,
                                 0,
                                 -1,
