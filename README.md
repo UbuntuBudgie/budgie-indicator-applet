@@ -13,7 +13,7 @@ To compile:
     
     git clone https://github.com/budgie-remix/budgie-indicator-applet
     cd budgie-indicator-applet
-    ./autogen.sh --prefix=/usr
+    ./autogen.sh --prefix=/usr --libdir=/usr/lib
     make
     sudo make install
 
