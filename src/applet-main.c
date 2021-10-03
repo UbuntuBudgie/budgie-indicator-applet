@@ -104,15 +104,23 @@ static void resize_image(GtkImage *image, __attribute__((unused)) gpointer user_
 {
         GdkPixbuf *pixbuf;
         GdkPixbuf *scaled_pixbuf;
+        int pixbuf_height;
+        int pixbuf_width;
+        int pixbuf_size;
         g_debug("zzz resize_image");
 
         pixbuf = gtk_image_get_pixbuf (image);
 
         if (pixbuf == NULL) return;
 
-        if (gdk_pixbuf_get_height(pixbuf) != (current_icon_size-2)) {
+        pixbuf_height = gdk_pixbuf_get_height(pixbuf);
+        if ( pixbuf_height !=0 && pixbuf_height != (current_icon_size-2)) {
+                pixbuf_width = gdk_pixbuf_get_width(pixbuf);
+                pixbuf_size = (int)((double)(current_icon_size-2) / pixbuf_height * pixbuf_width );
+                if (pixbuf_width <= 0 || (current_icon_size-2) <= 0 || pixbuf_size <= 0) return;
+
                 scaled_pixbuf = gdk_pixbuf_scale_simple( pixbuf,
-                        (int)((double)(current_icon_size-2) / gdk_pixbuf_get_height(pixbuf) * gdk_pixbuf_get_width(pixbuf)),
+                        pixbuf_size,
                         (current_icon_size-2), GDK_INTERP_HYPER
                         );
 
@@ -726,12 +734,12 @@ load_indicators_from_indicator_files (AppIndicatorApplet *applet, GtkWidget *men
                 if (!g_strcmp0(name, INDICATOR_SERVICE_APPMENU_NG)) {
                         continue;
                 }
-                if (!g_strcmp0(name, INDICATOR_SERVICE_ME_NG)) {
+                /*if (!g_strcmp0(name, INDICATOR_SERVICE_ME_NG)) {
                         continue;
-                }
-                if (!g_strcmp0(name,  INDICATOR_SERVICE_DATETIME_NG)) {
+                }*/
+                /*if (!g_strcmp0(name,  INDICATOR_SERVICE_DATETIME_NG)) {
                         continue;
-                }
+                }*/
                 if (indicator) {
                         load_indicator(applet, menubar, INDICATOR_OBJECT (indicator), name);
                         count++;
