@@ -1,3 +1,15 @@
+budgie-indicator-applet (0.7.1-1) unstable; urgency=medium
+
+  * New upstream release
+    - resize pixbuf type images if they are oversized
+    - enable ayatana indicator datetime & message support
+  * Packaging changes
+    - debhelper change to 13
+    - StandardsVersion bumped - no changes required
+    - rules ubuntu now uses ayatana for build rules
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Thu, 28 Oct 2021 22:26:37 +0100
+
 budgie-indicator-applet (0.6.2-1) unstable; urgency=medium
 
   * New Upstream release
