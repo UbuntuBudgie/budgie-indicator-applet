@@ -713,6 +713,10 @@ load_indicators_from_indicator_files (AppIndicatorApplet *applet, GtkWidget *men
         const gchar *name;
         GError *error = NULL;
 
+        if (!g_file_test(INDICATOR_SERVICE_DIR, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
+                return; // directory not available
+        }
+
         dir = g_dir_open (INDICATOR_SERVICE_DIR, 0, &error);
 
         if (!dir) {
