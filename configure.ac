@@ -121,7 +121,7 @@ fi
 
 ### prepare Ayatana or Ubuntu Indicators implementation for the build, regarding to the decision reached above...
 
-if   test "x$use_ayatanaindicator" == "xyes"; then
+if   test "x$use_ayatanaindicator" = "xyes"; then
 
     AM_CONDITIONAL(WITH_AYATANA_INDICATOR, true)
     AM_CONDITIONAL(WITH_UBUNTU_INDICATOR, false)
@@ -129,7 +129,7 @@ if   test "x$use_ayatanaindicator" == "xyes"; then
     AC_DEFINE(HAVE_UBUNTU_INDICATOR, 0, "DISABLED: Ubuntu Indicators Support")
     AC_DEFINE(HAVE_UBUNTU_INDICATOR_NG, 0, "DISABLED: Ubuntu Indicators NG Support")
 
-    if test "x$indicator_enforced" == "xyes"; then
+    if test "x$indicator_enforced" = "xyes"; then
         AC_MSG_NOTICE([Using Ayatana Indicators for this build (as requested via configure option).])
     else
         AC_MSG_NOTICE([Using Ayatana Indicators for this build.])
