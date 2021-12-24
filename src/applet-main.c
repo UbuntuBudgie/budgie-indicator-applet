@@ -311,7 +311,7 @@ static gboolean entry_scrolled(GtkWidget *menuitem, GdkEventScroll *event,
 }
 
 static gboolean
-entry_pressed (GtkWidget *menuitem, GdkEvent *event, gpointer data)
+entry_pressed (GtkWidget *menuitem, GdkEvent *event, __attribute__((unused)) gpointer data)
 {
        g_return_val_if_fail(GTK_IS_MENU_ITEM(menuitem), FALSE);
 
@@ -326,7 +326,7 @@ entry_pressed (GtkWidget *menuitem, GdkEvent *event, gpointer data)
 }
 
 static gboolean
-entry_released (GtkWidget *menuitem, GdkEvent *event, gpointer data)
+entry_released (GtkWidget *menuitem, GdkEvent *event, __attribute__((unused)) gpointer data)
 {
        g_return_val_if_fail(GTK_IS_MENU_ITEM(menuitem), FALSE);
 
