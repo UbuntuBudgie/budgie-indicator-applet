@@ -1,3 +1,12 @@
+budgie-indicator-applet (0.7.2-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+    - Enable middle click indicator support
+    - Remove bashisms from configure script (Closes: #998730)
+    - Don't spam journal if there are no indicators loaded
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Fri, 24 Dec 2021 22:52:38 +0000
+
 budgie-indicator-applet (0.7.1-1) unstable; urgency=medium
 
   * New upstream release
