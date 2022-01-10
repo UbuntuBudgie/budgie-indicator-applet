@@ -1,11 +1,10 @@
-budgie-indicator-applet (0.7.2-1) UNRELEASED; urgency=medium
+budgie-indicator-applet (0.7.1-2) unstable; urgency=medium
 
-  * New upstream release
-    - Enable middle click indicator support
-    - Remove bashisms from configure script (Closes: #998730)
-    - Don't spam journal if there are no indicators loaded
+  * No change rebuild
+    - this is required to enable the applet to pick up the revised
+      ayatana install paths
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Fri, 24 Dec 2021 22:52:38 +0000
+ -- David Mohammed <fossfreedom@ubuntu.com>  Mon, 10 Jan 2022 22:12:28 +0000
 
 budgie-indicator-applet (0.7.1-1) unstable; urgency=medium
 
