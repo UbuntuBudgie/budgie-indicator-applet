@@ -2,7 +2,16 @@
 
 ## [Unreleased](https://github.com/ubuntubudgie/budgie-indicator-applet/tree/HEAD)
 
-[Full Changelog](https://github.com/ubuntubudgie/budgie-indicator-applet/compare/v0.7.0...HEAD)
+[Full Changelog](https://github.com/ubuntubudgie/budgie-indicator-applet/compare/0.7.1...HEAD)
+
+**Closed issues:**
+
+- Merge Commits from XFCE and Mate indicators [\#29](https://github.com/UbuntuBudgie/budgie-indicator-applet/issues/29)
+- Bug\#998730: budgie-indicator-applet: 0.7.1-1 [\#28](https://github.com/UbuntuBudgie/budgie-indicator-applet/issues/28)
+
+## [0.7.1](https://github.com/ubuntubudgie/budgie-indicator-applet/tree/0.7.1) (2021-10-28)
+
+[Full Changelog](https://github.com/ubuntubudgie/budgie-indicator-applet/compare/v0.7.0...0.7.1)
 
 **Closed issues:**
 
