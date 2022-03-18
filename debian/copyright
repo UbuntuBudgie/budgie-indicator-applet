@@ -3,11 +3,11 @@ Upstream-Name: budgie-indicator-applet
 Source: https://github.com/UbuntuBudgie/budgie-indicator-applet
 
 Files: *
-Copyright: 2016-2019, David Mohammed <fossfreedom@ubuntu.com>
+Copyright: 2016-2022, David Mohammed <fossfreedom@ubuntu.com>
 License: GPL-3
 
 Files: debian/*
-Copyright: 2016-2019, David Mohammed <fossfreedom@ubuntu.com>
+Copyright: 2016-2022, David Mohammed <fossfreedom@ubuntu.com>
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ License: GPL-2+
  License version 2 can be found in "/usr/share/common-licenses/GPL-2".
 
 Files: src/applet-main.c
-Copyright: 2009-2010 Canonical Ltd., 2016-2017 David Mohammed
+Copyright: 2009-2010 Canonical Ltd., 2016-2022 David Mohammed
 License: GPL-3
 
 License: GPL-3
