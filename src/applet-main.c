@@ -72,7 +72,7 @@ static gchar *indicator_order[] = { "libayatana-application.so", "libayatana-mes
                                     "libayatana-datetime.so",    "libayatana-session.so",   NULL };
 #endif
 
-static gchar *blacklist_applets[] = { "nm-applet", "chrome_status_icon_1", "chrome_status_icon_2",  0 };
+static gchar *blacklist_applets[] = { "nm-applet",  0 };
 
 void calc_default_icon_size(void);
 
@@ -383,6 +383,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
                 int loop = 0;
                 while (blacklist_applets[loop]) {
                         if (strstr(entry->name_hint, blacklist_applets[loop]) != NULL) {
+                                g_debug("exit here %s", entry->name_hint);
                                 return;
                         }
                         loop++;
