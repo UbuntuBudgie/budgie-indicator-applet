@@ -1,0 +1,34 @@
+Applied-Upstream: commit: 6ff6208c28ebf97c80b2534511e48e95fef3d5b8
+Author: David Mohammed <fossfreedom@ubuntu.com>
+Last-Update: 2023-06-12
+Description: [PATCH] Revert hiding of chrome icons now that they have resolved
+ status tray icons vs knotifier icons
+
+---
+ src/applet-main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/applet-main.c b/src/applet-main.c
+index 097129d..802fe5d 100644
+--- a/src/applet-main.c
++++ b/src/applet-main.c
+@@ -72,7 +72,7 @@ static gchar *indicator_order[] = { "libayatana-application.so", "libayatana-mes
+                                     "libayatana-datetime.so",    "libayatana-session.so",   NULL };
+ #endif
+ 
+-static gchar *blacklist_applets[] = { "nm-applet", "chrome_status_icon_1", "chrome_status_icon_2",  0 };
++static gchar *blacklist_applets[] = { "nm-applet",  0 };
+ 
+ void calc_default_icon_size(void);
+ 
+@@ -383,6 +383,7 @@ static void entry_added(IndicatorObject *io, IndicatorObjectEntry *entry, GtkWid
+                 int loop = 0;
+                 while (blacklist_applets[loop]) {
+                         if (strstr(entry->name_hint, blacklist_applets[loop]) != NULL) {
++                                g_debug("exit here %s", entry->name_hint);
+                                 return;
+                         }
+                         loop++;
+-- 
+2.34.1
+
