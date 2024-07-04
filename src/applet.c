@@ -263,7 +263,7 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
         /* Show all of our things. */
         gtk_widget_show_all(GTK_WIDGET(self));
 
-        g_timeout_add_seconds(1, delay_load_indicators, self);
+        g_timeout_add_seconds(1, (GSourceFunc)delay_load_indicators, self);
 }
 
 void appindicator_applet_init_gtype(GTypeModule *module)
