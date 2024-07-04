@@ -1,3 +1,10 @@
+budgie-indicator-applet (0.7.2-4) unstable; urgency=medium
+
+  * Resolve FTBFS with GCC-14 due to incompatible point types being enforced
+    (Closes: #1074859)
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Thu, 04 Jul 2024 10:43:42 +0100
+
 budgie-indicator-applet (0.7.2-3) unstable; urgency=medium
 
   * Revert v0.6.2-1 now that ayatana indicators has more

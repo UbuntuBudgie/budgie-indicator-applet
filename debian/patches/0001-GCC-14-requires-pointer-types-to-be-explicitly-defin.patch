@@ -1,0 +1,26 @@
+Applied-Upstream: commit: 15fac7ed13a2481583c26b541d1bb9456b996764
+Author: David Mohammed <fossfreedom@ubuntu.com>
+Last-Update: 2024-07-04
+Description: [PATCH] GCC-14 requires pointer types to be explicitly defined or
+ cast - closes #31
+
+---
+ src/applet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/applet.c b/src/applet.c
+index 5e7a7e3..17f5b59 100644
+--- a/src/applet.c
++++ b/src/applet.c
+@@ -263,7 +263,7 @@ static void appindicator_applet_init(AppIndicatorApplet *self)
+         /* Show all of our things. */
+         gtk_widget_show_all(GTK_WIDGET(self));
+ 
+-        g_timeout_add_seconds(1, delay_load_indicators, self);
++        g_timeout_add_seconds(1, (GSourceFunc)delay_load_indicators, self);
+ }
+ 
+ void appindicator_applet_init_gtype(GTypeModule *module)
+-- 
+2.43.0
+
