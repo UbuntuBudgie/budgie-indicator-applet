@@ -3,7 +3,7 @@ Author: David Mohammed <fossfreedom@ubuntu.com>
 Last-Update: 2024-07-04
 Description: [PATCH] GCC-14 requires pointer types to be explicitly defined or
  cast - closes #31
-
+Bug: https://github.com/UbuntuBudgie/budgie-indicator-applet/issues/31
 ---
  src/applet.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

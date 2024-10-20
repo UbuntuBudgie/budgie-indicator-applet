@@ -1,3 +1,18 @@
+budgie-indicator-applet (0.7.2-6) unstable; urgency=medium
+
+  * Packaging updates
+    - d/watch - use Github friendly watch file format
+    - d/control - bump StandardsVersion - no additional changes required
+    - patches - add Forwarded/Bug references
+    - d/control - add Rules-Requires-Root
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 20 Oct 2024 10:22:47 +0100
+
+budgie-indicator-applet (0.7.2-5) unstable; urgency=medium
+
+  * Re-upload
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 13 Oct 2024 14:49:39 +0100
+
 budgie-indicator-applet (0.7.2-4) unstable; urgency=medium
 
   * Resolve FTBFS with GCC-14 due to incompatible point types being enforced

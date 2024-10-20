@@ -1,4 +1,5 @@
 Applied-Upstream: commit: 6ff6208c28ebf97c80b2534511e48e95fef3d5b8
+Forwarded: yes
 Author: David Mohammed <fossfreedom@ubuntu.com>
 Last-Update: 2023-06-12
 Description: [PATCH] Revert hiding of chrome icons now that they have resolved
