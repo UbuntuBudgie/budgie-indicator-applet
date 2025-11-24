@@ -13,7 +13,7 @@ INDICATOR_IMPLEMENTATION=--with-ayatana-indicators=yes
 	dh $@
 	
 override_dh_auto_configure:
-	dh_auto_configure -- --prefix=/usr --libdir=/usr/lib $(INDICATOR_IMPLEMENTATION)
+	dh_auto_configure -- --prefix=/usr $(INDICATOR_IMPLEMENTATION) --with-budgie-typelib-version=3.0
 
 override_dh_auto_install:
 	dh_auto_install
