@@ -12,11 +12,19 @@ AC_CONFIG_MACRO_DIR([m4])
 
 m4_define([budgie_required_version], [1])
 
+# Optional configure flag to override the Budgie typelib version (default: 1.0)
+AC_ARG_WITH([budgie-typelib-version],
+  AS_HELP_STRING([--with-budgie-typelib-version=VERSION],
+    [Specify Budgie typelib version (default: 1.0)]),
+  [BUDGIE_TYPELIB_VERSION="$withval"],
+  [BUDGIE_TYPELIB_VERSION="1.0"])
+AC_SUBST([BUDGIE_TYPELIB_VERSION])
+
 # Note budgie-1.0 depends on peas, gtk, etc. Sorta your package managers
 # business to make sure those deps are satisfied.
 # Also note this is just for the C and Vala subprojects!
 PKG_CHECK_MODULES(BUDGIE_PLUGIN,
-        budgie-1.0 >= budgie_required_version
+        budgie-$BUDGIE_TYPELIB_VERSION >= budgie_required_version
 )
 
 UBUNTU_INDICATOR_API_VERSION=3
@@ -46,7 +54,6 @@ AC_ARG_WITH([ubuntu-indicators],
 ###
 ### Look for Ayatana Indicators
 ###
-
 PKG_CHECK_EXISTS(ayatana-indicator3-0.4,
                  [have_ayatanaindicator="yes"],
                  [have_ayatanaindicator="no"])
@@ -58,7 +65,6 @@ PKG_CHECK_EXISTS(ayatana-indicator3-0.4 >= $AYATANA_INDICATOR_NG_VERSION,
 ###
 ### Look for Ubuntu Indicators
 ###
-
 PKG_CHECK_EXISTS(indicator3-0.4,
                  [have_ubuntuindicator="yes"],
                  [have_ubuntuindicator="no"])
@@ -119,8 +125,9 @@ else
 
 fi
 
+###
 ### prepare Ayatana or Ubuntu Indicators implementation for the build, regarding to the decision reached above...
-
+###
 if   test "x$use_ayatanaindicator" = "xyes"; then
 
     AM_CONDITIONAL(WITH_AYATANA_INDICATOR, true)
@@ -195,7 +202,7 @@ AC_OUTPUT
 AC_MSG_RESULT([
         budgie-indicator-applet $VERSION
         ========
-
+        Budgie typelib version:  ${BUDGIE_TYPELIB_VERSION}
         prefix:                 ${prefix}
         libdir:                 ${libdir}
         sysconfdir:             ${sysconfdir}
