@@ -1,4 +1,4 @@
-budgie-indicator-applet (0.7.2-6ubuntu1) resolute; urgency=medium
+budgie-indicator-applet (0.7.2-7) experimental; urgency=medium
 
   * Add patch 0001-Add-with-budgie-typelib-version-compile-time-option-.patch
     to allow building against different typelib versions
@@ -6,9 +6,11 @@ budgie-indicator-applet (0.7.2-6ubuntu1) resolute; urgency=medium
   * d/control - remove unneeded B/D against debhelper,
     build with libpeas-2-dev and remove restriction test on
     budgie-core-dev version since the typelib version is applicable
-  * d/copyright - update fsf address
+    Remove unneeded rules-requires-root
+    Bump StandardsVersion - no changes required
+  * d/copyright - update fsf address and copyright years
 
- -- David Mohammed <fossfreedom@ubuntu.com>  Mon, 24 Nov 2025 19:28:04 +0000
+ -- David Mohammed <fossfreedom@ubuntu.com>  Sun, 21 Dec 2025 23:32:20 +0000
 
 budgie-indicator-applet (0.7.2-6) unstable; urgency=medium
 
