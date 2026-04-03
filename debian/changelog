@@ -1,3 +1,10 @@
+budgie-indicator-applet (0.7.2-8) unstable; urgency=medium
+
+  * Upload to unstable since all core budgie packages are now available
+    (Closes: #1132568)
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Fri, 03 Apr 2026 10:25:02 +0100
+
 budgie-indicator-applet (0.7.2-7) experimental; urgency=medium
 
   * Add patch 0001-Add-with-budgie-typelib-version-compile-time-option-.patch
