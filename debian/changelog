@@ -1,3 +1,11 @@
+budgie-indicator-applet (0.7.2-9) unstable; urgency=medium
+
+  * B/D switch from libayatana-indicator3-dev to
+    libayatana-appindicator3-dev
+  * B/D add libgtk-layer-shell-dev (Closes: #1150084)
+
+ -- David Mohammed <fossfreedom@ubuntu.com>  Mon, 05 Oct 2026 18:13:05 +0100
+
 budgie-indicator-applet (0.7.2-8) unstable; urgency=medium
 
   * Upload to unstable since all core budgie packages are now available
